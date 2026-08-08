@@ -476,7 +476,7 @@ HAVING COUNT(*) >= 2;
 
 ## 1.7. Logische Ausführungsreihenfolge
 
-![Logische Ausführungsreihenfolge einer SELECT-Abfrage](./x_gitres/select-group-having-orderby.png.png)
+![Logische Ausführungsreihenfolge einer SELECT-Abfrage](./x_gitres/select-group-having-orderby.png)
 
 SQL wird zwar in der Reihenfolge `SELECT … FROM … WHERE … GROUP BY … HAVING … ORDER BY` **geschrieben**, aber in folgender Reihenfolge **ausgeführt**:
 
@@ -513,6 +513,8 @@ Dieses Auseinanderfallen von Schreib- und Ausführungsreihenfolge ist für viele
 | 8               | `LIMIT / OFFSET` | Anzahl Zeilen begrenzen            |
 
 ### 1.8.2. Prädikate Übersicht
+
+![Prädikate](./x_gitres/select-praedikte.png)
 
 | **Prädikat** | **Syntax**                  | **Bedeutung**           |
 | ------------ | --------------------------- | ----------------------- |
@@ -553,11 +555,11 @@ Dieses Auseinanderfallen von Schreib- und Ausführungsreihenfolge ist für viele
 
 **Datenbank und Initial Daten wie folgt erstellen:**
 
-- Erstelle mit **[SQLiteStudio](https://sqlitestudio.pl)** oder **[DB Browser for SQLite](https://sqlitebrowser.org)** eine neue Datenbank (`bibliothek.db`)
+- Erstelle mit **[Letos](https://letos.org/)** eine neue Datenbank (`bibliothek.db`)
 - Führe die SQL-Befehle der Datei ![Bibliothek.sql](./x_gitres/bibliothek_daten.sql) aus.
 - Prüfe ob alle vier Tabellen angelegt und mit Daten befüllt wurden.
 
-> **Setup**
+> **Setup für Kommandozeile**
 > Erstellt die Datenbank lokal: `sqlite3 bibliothek.db < schema.sql`
 
 ---
@@ -668,4 +670,4 @@ Dieses Auseinanderfallen von Schreib- und Ausführungsreihenfolge ist für viele
 ---
 
 © 2026 Lukas Müller – Licensed under CC BY-NC-ND 4.0
-See [LICENSE](..\license.md) file for details.
+See [LICENSE](../license.md) file for details.

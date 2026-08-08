@@ -67,7 +67,9 @@ Nach dieser Lektion könnt ihr:
 | DML             | Daten manipulieren/abfragen   | `SELECT`, `INSERT`, `UPDATE`, `DELETE` | Kapitel 7–9        |
 | DCL             | Zugriff/Transaktionen steuern | `GRANT`, `COMMIT`, `ROLLBACK`          | punktuell          |
 
-SQL ist eine **mengenorientierte** Sprache: Ein einzelner Befehl kann mehrere Datensätze gleichzeitig betreffen, im Gegensatz zu einer prozeduralen Sprache wie C oder PowerShell, wo man typischerweise Zeile für Zeile durch Daten iteriert. Dieser deklarative Charakter ist ein zentraler Unterschied zu den bereits bekannten Programmiersprachen: In SQL beschreibt man **was** man erreichen möchte („alle Maschinen, die in Halle 1 stehen"), nicht **wie** dies Schritt für Schritt zu berechnen ist. Die konkrete Ausführungsstrategie (z.B. ob ein Index verwendet wird) überlässt man dem sogenannten Query-Optimizer des DBMS.
+> **Hinweis:** SQLite kennt kein Berechtigungssystem – `GRANT`/`REVOKE` existieren in SQLite **nicht** und lösen einen Syntaxfehler aus. Die DCL-Zeile ist hier rein konzeptionell gemeint (in Client-Server-DBMS wie SQL Server oder PostgreSQL steuern diese Befehle Benutzerrechte). `COMMIT`/`ROLLBACK` (Transaktionssteuerung) funktionieren in SQLite hingegen normal und werden im DML-Kapitel vertieft.
+
+SQL ist eine **mengenorientierte** Sprache: Ein einzelner Befehl kann mehrere Datensätze gleichzeitig betreffen, im Gegensatz zu einer prozeduralen Sprache wie C oder PowerShell, wo man typischerweise Zeile für Zeile durch Daten iteriert. Dieser deklarative Charakter ist ein zentraler Unterschied zu den bereits bekannten Programmiersprachen: In SQL beschreibt man **was** man erreichen möchte („alle Bücher, die aktuell ausgeliehen sind"), nicht **wie** dies Schritt für Schritt zu berechnen ist. Die konkrete Ausführungsstrategie (z.B. ob ein Index verwendet wird) überlässt man dem sogenannten Query-Optimizer des DBMS.
 
 SQL wurde in den 1970er-Jahren bei IBM entwickelt, ursprünglich unter dem Namen SEQUEL, und ist seit 1986 (ANSI) bzw. 1987 (ISO) ein internationaler Standard. Trotz dieser Standardisierung unterscheiden sich die konkreten SQL-Dialekte verschiedener Hersteller (T-SQL bei SQL Server, PL/pgSQL bei PostgreSQL, die SQLite-eigene Syntax) in Details – die in diesem Kapitel behandelten SQLite-Besonderheiten sind ein typisches Beispiel dafür.
 
@@ -158,11 +160,11 @@ CREATE TABLE tabellenname (
 **Beispiel:**
 
 ```sql
-CREATE TABLE Techniker (
-    PersonalNr      INTEGER PRIMARY KEY AUTOINCREMENT,
-    Name            TEXT NOT NULL,
-    Telefonnummer   TEXT,
-    Fachgebiet      TEXT
+CREATE TABLE kunden (
+    id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    name    TEXT NOT NULL,
+    email   TEXT,
+    stadt   TEXT
 );
 ```
 
@@ -176,10 +178,10 @@ CREATE TABLE Techniker (
 
 ```sql
 -- Ohne IF NOT EXISTS: Fehler, wenn Tabelle bereits existiert
-CREATE TABLE Techniker ( ... );   -- Fehler bei Wiederholung
+CREATE TABLE kunden ( ... );   -- Fehler bei Wiederholung
 
 -- Mit IF NOT EXISTS: Kein Fehler, Tabelle bleibt unverändert
-CREATE TABLE IF NOT EXISTS Techniker ( ... );
+CREATE TABLE IF NOT EXISTS kunden ( ... );
 ```
 
 > **Best Practice:** In Setup-Skripten immer `IF NOT EXISTS` verwenden –
@@ -198,7 +200,7 @@ CREATE TABLE IF NOT EXISTS Techniker ( ... );
 | `CHECK`        | benutzerdefinierte Gültigkeitsregel                     | `CHECK (Preis >= 0)`             |
 | `FOREIGN KEY`  | Verweis auf einen Primärschlüssel einer anderen Tabelle | siehe unten                      |
 
-Constraints sind ein zentrales Werkzeug, um Datenintegrität **direkt auf Datenbankebene** sicherzustellen, statt sich ausschliesslich auf die Applikationslogik zu verlassen. Der grosse Vorteil: Ein Constraint gilt für **jeden** Zugriffsweg auf die Datenbank – egal ob über die geplante Applikation, ein Wartungsskript oder eine manuelle Korrektur direkt in SQLiteStudio. Fehlerhafte Daten werden so bereits an der Quelle verhindert, statt erst nachträglich (und oft zu spät) entdeckt zu werden.
+Constraints sind ein zentrales Werkzeug, um Datenintegrität **direkt auf Datenbankebene** sicherzustellen, statt sich ausschliesslich auf die Applikationslogik zu verlassen. Der grosse Vorteil: Ein Constraint gilt für **jeden** Zugriffsweg auf die Datenbank – egal ob über die geplante Applikation, ein Wartungsskript oder eine manuelle Korrektur direkt in Letos. Fehlerhafte Daten werden so bereits an der Quelle verhindert, statt erst nachträglich (und oft zu spät) entdeckt zu werden.
 
 #### 1.4.3.1. NOT NULL - Constraint
 
@@ -221,9 +223,9 @@ beschreibung TEXT        -- entspricht: beschreibung TEXT NULL
 
 ```sql
 -- Typischer Fehler:
-INSERT INTO mitglieder (vorname, email, eintrittsdatum)
-VALUES ('Anna', 'anna@example.com', '2024-01-15');
--- Fehler: NOT NULL constraint failed: mitglieder.nachname
+INSERT INTO buecher (autor_id, genre, jahr)
+VALUES (3, 'Roman', 2020);
+-- Fehler: NOT NULL constraint failed: buecher.titel
 ```
 
 #### 1.4.3.2. PRIMARY KEY - Constraint
@@ -234,14 +236,6 @@ Primärschlüssel haben.
 ```sql
 -- Einfacher PK (häufigster Fall)
 id INTEGER PRIMARY KEY AUTOINCREMENT
-
--- Zusammengesetzter PK (auf Tabellenebene)
-CREATE TABLE mitglied_event (
-    mitglied_id INTEGER NOT NULL,
-    event_id    INTEGER NOT NULL,
-    anmeldedatum TEXT,
-    PRIMARY KEY (mitglied_id, event_id)
-);
 ```
 
 > **AUTOINCREMENT – wann nötig?**
@@ -253,28 +247,43 @@ CREATE TABLE mitglied_event (
 
 #### 1.4.3.3. Zusammengesetzter Primärschlüssel (Zwischentabelle)
 
+Für eine Zwischentabelle liegt ein zusammengesetzter Primärschlüssel aus beiden Fremdschlüsseln nahe:
+
 ```sql
-CREATE TABLE Wartung_Ersatzteil (
-    WartungsNr    INTEGER NOT NULL,
-    ErsatzteilNr  INTEGER NOT NULL,
-    Menge         INTEGER NOT NULL DEFAULT 1,
-    PRIMARY KEY (WartungsNr, ErsatzteilNr),
-    FOREIGN KEY (WartungsNr)   REFERENCES Wartung(WartungsNr),
-    FOREIGN KEY (ErsatzteilNr) REFERENCES Ersatzteil(ErsatzteilNr)
+-- Naiver Ansatz
+CREATE TABLE ausleihen_naiv (
+    kunden_id    INTEGER NOT NULL,
+    buch_id      INTEGER NOT NULL,
+    ausleihdatum TEXT,
+    PRIMARY KEY (kunden_id, buch_id)
 );
 ```
+
+**Problem:** Mit diesem PK könnte ein Kunde dasselbe Buch nie ein zweites Mal ausleihen – die Kombination `(kunden_id, buch_id)` muss ja eindeutig bleiben. Da genau das in einer Bibliothek aber vorkommen soll (dieselbe Person leiht dasselbe Buch später erneut aus), erhält die echte Tabelle stattdessen einen eigenen künstlichen Schlüssel:
+
+```sql
+CREATE TABLE ausleihen (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    kunden_id    INTEGER NOT NULL,
+    buch_id      INTEGER NOT NULL,
+    ausleihdatum TEXT,
+    rueckgabe    TEXT
+);
+```
+
+Dieselbe Überlegung ist bereits in Kapitel 4.2 (künstlicher vs. natürlicher Schlüssel) angesprochen worden – hier zeigt sich ihr praktischer Nutzen bei Zwischentabellen ganz konkret.
 
 #### 1.4.3.4. Foreign Key - Constraint
 
 ```sql
-CREATE TABLE Wartung (
-    WartungsNr    INTEGER PRIMARY KEY AUTOINCREMENT,
-    Datum         TEXT NOT NULL,
-    Beschreibung  TEXT,
-    PersonalNr    INTEGER NOT NULL,
-    MaschinenNr   INTEGER NOT NULL,
-    FOREIGN KEY (PersonalNr)  REFERENCES Techniker(PersonalNr),
-    FOREIGN KEY (MaschinenNr) REFERENCES Maschine(MaschinenNr)
+CREATE TABLE ausleihen (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    kunden_id    INTEGER NOT NULL,
+    buch_id      INTEGER NOT NULL,
+    ausleihdatum TEXT NOT NULL,
+    rueckgabe    TEXT,
+    FOREIGN KEY (kunden_id) REFERENCES kunden(id),
+    FOREIGN KEY (buch_id)   REFERENCES buecher(id)
 );
 ```
 
@@ -295,15 +304,15 @@ Garantiert, dass kein Wert in dieser Spalte doppelt vorkommt.
 
 ```sql
 -- Einfach-UNIQUE auf Spaltenebene
-email TEXT NOT NULL UNIQUE
+email TEXT UNIQUE
 
 -- Zusammengesetztes UNIQUE auf Tabellenebene
 -- (Kombination muss eindeutig sein, nicht jede Spalte einzeln)
-CREATE TABLE mitglied_event (
-    mitglied_id INTEGER NOT NULL,
-    event_id    INTEGER NOT NULL,
-    anmeldedatum TEXT,
-    UNIQUE (mitglied_id, event_id)   -- ein Mitglied kann sich nur einmal anmelden
+CREATE TABLE buecher (
+    id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    titel  TEXT NOT NULL,
+    jahr   INTEGER,
+    UNIQUE (titel, jahr)   -- kein doppelter Katalogeintrag desselben Titels im selben Jahr
 );
 ```
 
@@ -314,29 +323,24 @@ fehl, wenn die Bedingung `FALSE` ergibt. `NULL` besteht den CHECK
 (da `NULL` in SQLite als "unbekannt" gilt, nicht als falsch).
 
 ```sql
--- Einfache CHECK-Constraints
-ALTER TABLE mitglieder ADD COLUMN jahrgang INTEGER
-    CHECK (jahrgang >= 1900 AND jahrgang <= 2020);
+-- Einfache CHECK-Constraints (nachträglich per ALTER TABLE ergänzt)
+ALTER TABLE buecher ADD COLUMN seitenzahl INTEGER
+    CHECK (seitenzahl > 0);
 
 -- Typische CHECKs in der Praxis
-preis       REAL    NOT NULL CHECK (preis >= 0),
-prioritaet  INTEGER NOT NULL CHECK (prioritaet IN (1, 2, 3)),
-status      TEXT    NOT NULL CHECK (status IN ('aktiv', 'inaktiv', 'gesperrt')),
-bis_datum   TEXT             CHECK (bis_datum >= von_datum),  -- spaltenübergreifend
+preis        REAL    NOT NULL CHECK (preis >= 0),
+lagerbestand INTEGER NOT NULL DEFAULT 0 CHECK (lagerbestand >= 0),
+genre        TEXT             CHECK (genre IN ('Roman', 'Krimi', 'Sachbuch', 'Biografie', 'Fantasy')),
+rueckgabe    TEXT             CHECK (rueckgabe IS NULL OR rueckgabe >= ausleihdatum),  -- spaltenübergreifend
 
--- Events-Tabelle mit mehreren Checks
-CREATE TABLE IF NOT EXISTS events (
-    id              INTEGER PRIMARY KEY AUTOINCREMENT,
-    titel           TEXT    NOT NULL,
-    von_datum       TEXT    NOT NULL,
-    bis_datum       TEXT    NOT NULL,
-    max_teilnehmer  INTEGER CHECK (max_teilnehmer > 0),
-    kosten          REAL    NOT NULL DEFAULT 0.0
-                    CHECK (kosten >= 0),
-    status          TEXT    NOT NULL DEFAULT 'geplant'
-                    CHECK (status IN ('geplant', 'aktiv', 'abgesagt', 'abgeschlossen')),
-    verantwortlich_id INTEGER REFERENCES mitglieder(id),
-    CONSTRAINT valid_zeitraum CHECK (bis_datum >= von_datum)
+-- Ausleihen-Tabelle mit mehreren Checks
+CREATE TABLE IF NOT EXISTS ausleihen (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    kunden_id     INTEGER NOT NULL REFERENCES kunden(id),
+    buch_id       INTEGER NOT NULL REFERENCES buecher(id),
+    ausleihdatum  TEXT    NOT NULL DEFAULT (date('now')),
+    rueckgabe     TEXT,
+    CONSTRAINT valid_zeitraum CHECK (rueckgabe IS NULL OR rueckgabe >= ausleihdatum)
 );
 ```
 
@@ -351,19 +355,18 @@ Wert angegeben wird.
 
 ```sql
 -- Statischer Standardwert
-status  TEXT    NOT NULL DEFAULT 'aktiv'
-aktiv   INTEGER NOT NULL DEFAULT 1
-land    TEXT             DEFAULT 'Schweiz'
+lagerbestand INTEGER NOT NULL DEFAULT 0
+stadt        TEXT             DEFAULT 'unbekannt'
 
 -- Dynamischer Standardwert (Funktion)
-erstellt_am TEXT NOT NULL DEFAULT (datetime('now'))
-token       TEXT NOT NULL DEFAULT (hex(randomblob(16)))
+ausleihdatum TEXT NOT NULL DEFAULT (date('now'))
+token        TEXT NOT NULL DEFAULT (hex(randomblob(16)))
 
 -- Verwendung:
-INSERT INTO mitglieder (vorname, nachname, email, eintrittsdatum)
-VALUES ('Beat', 'Müller', 'beat@example.com', '2024-03-01');
--- aktiv wird automatisch auf 1 gesetzt
--- eintrittsdatum DEFAULT greift NICHT, weil wir einen Wert angegeben haben
+INSERT INTO ausleihen (kunden_id, buch_id)
+VALUES (3, 12);
+-- ausleihdatum wird automatisch auf das heutige Datum gesetzt
+-- rueckgabe bleibt NULL, weil das Buch noch nicht zurückgegeben wurde
 ```
 
 ### 1.4.4. Constraints auf Tabellenebene – Übersicht
@@ -399,19 +402,17 @@ Was passiert, wenn ein referenzierter Datensatz gelöscht oder geändert wird?
 | `SET DEFAULT` | Fremdschlüssel-Spalte wird auf den DEFAULT-Wert gesetzt           |
 
 ```sql
-CREATE TABLE IF NOT EXISTS mitglieder (
+CREATE TABLE IF NOT EXISTS buecher (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    vorname      TEXT    NOT NULL,
-    nachname     TEXT    NOT NULL,
-    email        TEXT    NOT NULL UNIQUE,
-    telefon      TEXT,
-    geburtsdatum TEXT,
-    eintrittsdatum TEXT  NOT NULL DEFAULT (date('now')),
-    aktiv        INTEGER NOT NULL DEFAULT 1,
+    titel        TEXT    NOT NULL,
+    genre        TEXT,
+    jahr         INTEGER,
+    preis        REAL,
+    lagerbestand INTEGER NOT NULL DEFAULT 0,
 
-    -- Abteilung: optional. Wird Abteilung gelöscht → NULL setzen
-    abteilung_id INTEGER
-        REFERENCES abteilungen(id)
+    -- Autor: optional. Wird Autor gelöscht → NULL setzen
+    autor_id INTEGER
+        REFERENCES autoren(id)
         ON DELETE SET NULL
         ON UPDATE CASCADE
 );
@@ -420,17 +421,17 @@ CREATE TABLE IF NOT EXISTS mitglieder (
 **Praxisbeispiele für die Aktionswahl:**
 
 ```sql
--- Bestellpositionen: Wenn Bestellung gelöscht → Positionen mitlöschen
-bestellung_id INTEGER NOT NULL
-    REFERENCES bestellungen(id)
+-- Ausleihen: Wenn Buch aus dem Katalog gelöscht → Ausleihhistorie mitlöschen
+buch_id INTEGER NOT NULL
+    REFERENCES buecher(id)
     ON DELETE CASCADE
 
--- Mitglied: Wenn Abteilung gelöscht → Mitglied bleibt, Zuweisung wird NULL
-abteilung_id INTEGER
-    REFERENCES abteilungen(id)
+-- Buch: Wenn Autor gelöscht → Buch bleibt im Katalog, Zuweisung wird NULL
+autor_id INTEGER
+    REFERENCES autoren(id)
     ON DELETE SET NULL
 
--- Kritische Referenz: Löschen verhindern (z.B. Rechnungen)
+-- Kritische Referenz: Kunde mit offenen Ausleihen darf nicht gelöscht werden
 kunden_id INTEGER NOT NULL
     REFERENCES kunden(id)
     ON DELETE RESTRICT
@@ -442,10 +443,10 @@ kunden_id INTEGER NOT NULL
 
 ```sql
 -- Tabelle löschen (Fehler, wenn nicht vorhanden)
-DROP TABLE mitglieder;
+DROP TABLE kunden;
 
 -- Sicheres Löschen (kein Fehler, wenn nicht vorhanden)
-DROP TABLE IF EXISTS mitglieder;
+DROP TABLE IF EXISTS kunden;
 ```
 
 > **`DROP TABLE` löscht alle Daten unwiderruflich!** In SQLite gibt es
@@ -461,10 +462,10 @@ werden – sonst verletzt ihr die referentielle Integrität:
 PRAGMA foreign_keys = ON;
 
 -- Reihenfolge: erst Child, dann Parent
-DROP TABLE IF EXISTS mitglied_event;  -- referenziert mitglieder + events
-DROP TABLE IF EXISTS events;          -- referenziert mitglieder
-DROP TABLE IF EXISTS mitglieder;      -- referenziert abteilungen
-DROP TABLE IF EXISTS abteilungen;     -- keine FK nach aussen
+DROP TABLE IF EXISTS ausleihen;   -- referenziert kunden + buecher
+DROP TABLE IF EXISTS buecher;     -- referenziert autoren
+DROP TABLE IF EXISTS kunden;      -- keine FK nach aussen
+DROP TABLE IF EXISTS autoren;     -- keine FK nach aussen
 ```
 
 ---
@@ -478,18 +479,18 @@ im Vergleich zu anderen Datenbanken.
 
 ```sql
 -- Tabelle umbenennen
-ALTER TABLE mitglieder RENAME TO vereinsmitglieder;
+ALTER TABLE kunden RENAME TO bibliothekskunden;
 
 -- Spalte umbenennen (ab SQLite 3.25.0)
-ALTER TABLE mitglieder RENAME COLUMN telefon TO mobile;
+ALTER TABLE kunden RENAME COLUMN stadt TO wohnort;
 
 -- Spalte hinzufügen (nur am Ende, keine Constraints ausser DEFAULT und NOT NULL
 -- wenn DEFAULT angegeben oder NOT NULL mit DEFAULT)
-ALTER TABLE mitglieder ADD COLUMN notizen TEXT;
-ALTER TABLE mitglieder ADD COLUMN newsletter INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE kunden ADD COLUMN telefon TEXT;
+ALTER TABLE kunden ADD COLUMN newsletter INTEGER NOT NULL DEFAULT 0;
 
 -- Spalte löschen (ab SQLite 3.35.0)
-ALTER TABLE mitglieder DROP COLUMN notizen;
+ALTER TABLE kunden DROP COLUMN telefon;
 ```
 
 ### 1.6.2. Was geht NICHT – und der Workaround
@@ -500,29 +501,24 @@ SQLite erlaubt kein nachträgliches Hinzufügen von Constraints (z.B. `UNIQUE`,
 
 ```sql
 -- Schritt 1: Neue Tabelle mit gewünschtem Schema erstellen
-CREATE TABLE mitglieder_neu (
-    id           INTEGER PRIMARY KEY AUTOINCREMENT,
-    vorname      TEXT    NOT NULL,
-    nachname     TEXT    NOT NULL,
-    email        TEXT    NOT NULL UNIQUE,  -- neu: UNIQUE
-    telefon      TEXT,
-    geburtsdatum TEXT    CHECK (geburtsdatum GLOB '????-??-??'),  -- neu: CHECK
-    eintrittsdatum TEXT  NOT NULL DEFAULT (date('now')),
-    aktiv        INTEGER NOT NULL DEFAULT 1,
-    abteilung_id INTEGER REFERENCES abteilungen(id) ON DELETE SET NULL
+CREATE TABLE kunden_neu (
+    id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    name    TEXT    NOT NULL,
+    email   TEXT    NOT NULL UNIQUE,           -- neu: NOT NULL UNIQUE
+    stadt   TEXT    CHECK (stadt <> ''),        -- neu: CHECK
+    telefon TEXT
 );
 
 -- Schritt 2: Daten übertragen
-INSERT INTO mitglieder_neu
-SELECT id, vorname, nachname, email, telefon, geburtsdatum,
-       eintrittsdatum, aktiv, abteilung_id
-FROM mitglieder;
+INSERT INTO kunden_neu (id, name, email, stadt, telefon)
+SELECT id, name, email, stadt, telefon
+FROM kunden;
 
 -- Schritt 3: Alte Tabelle löschen
-DROP TABLE mitglieder;
+DROP TABLE kunden;
 
 -- Schritt 4: Neue Tabelle umbenennen
-ALTER TABLE mitglieder_neu RENAME TO mitglieder;
+ALTER TABLE kunden_neu RENAME TO kunden;
 ```
 
 > **Tipp:** In der Entwicklung (vor Produktivdaten) ist es einfacher,
@@ -541,17 +537,17 @@ ALTER TABLE mitglieder_neu RENAME TO mitglieder;
 SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name;
 
 -- CREATE-Statement einer Tabelle anzeigen
-SELECT sql FROM sqlite_master WHERE name = 'mitglieder';
+SELECT sql FROM sqlite_master WHERE name = 'kunden';
 
 -- Spalten einer Tabelle anzeigen
-PRAGMA table_info(mitglieder);
+PRAGMA table_info(kunden);
 -- Gibt zurück: cid, name, type, notnull, dflt_value, pk
 
 -- Fremdschlüssel einer Tabelle
-PRAGMA foreign_key_list(mitglieder);
+PRAGMA foreign_key_list(buecher);
 
 -- Alle Indizes
-PRAGMA index_list(mitglieder);
+PRAGMA index_list(kunden);
 ```
 
 ### 1.7.2. Indizes
@@ -560,21 +556,21 @@ Indizes beschleunigen Abfragen auf Kosten von Speicher und Schreibperformance.
 Primary Keys und UNIQUE-Constraints erstellen automatisch einen Index.
 
 ```sql
--- Einfacher Index (beschleunigt WHERE nachname = '...')
-CREATE INDEX IF NOT EXISTS idx_mitglieder_nachname
-    ON mitglieder (nachname);
+-- Einfacher Index (beschleunigt WHERE name = '...')
+CREATE INDEX IF NOT EXISTS idx_kunden_name
+    ON kunden (name);
 
--- Zusammengesetzter Index (beschleunigt WHERE nachname = '...' AND vorname = '...')
-CREATE INDEX IF NOT EXISTS idx_mitglieder_name
-    ON mitglieder (nachname, vorname);
+-- Zusammengesetzter Index (beschleunigt WHERE titel = '...' AND jahr = ...)
+CREATE INDEX IF NOT EXISTS idx_buecher_titel_jahr
+    ON buecher (titel, jahr);
 
--- Partieller Index (nur aktive Mitglieder indizieren)
-CREATE INDEX IF NOT EXISTS idx_mitglieder_aktiv_email
-    ON mitglieder (email)
-    WHERE aktiv = 1;
+-- Partieller Index (nur aktuell ausgeliehene Bücher indizieren)
+CREATE INDEX IF NOT EXISTS idx_ausleihen_offen
+    ON ausleihen (buch_id)
+    WHERE rueckgabe IS NULL;
 
 -- Index löschen
-DROP INDEX IF EXISTS idx_mitglieder_nachname;
+DROP INDEX IF EXISTS idx_kunden_name;
 ```
 
 ### 1.7.3. Views – Virtuelle Tabellen
@@ -583,23 +579,22 @@ Views sind gespeicherte SELECT-Abfragen, die wie Tabellen abgefragt werden
 können. Sie speichern keine Daten, sondern nur die Abfrage.
 
 ```sql
--- View: Aktive Mitglieder mit Abteilungsname
-CREATE VIEW IF NOT EXISTS v_aktive_mitglieder AS
+-- View: Bücher mit Autorenname
+CREATE VIEW IF NOT EXISTS v_buecher_mit_autor AS
 SELECT
-    m.id,
-    m.vorname || ' ' || m.nachname AS vollname,
-    m.email,
-    m.eintrittsdatum,
-    COALESCE(a.name, 'Keine Abteilung') AS abteilung
-FROM mitglieder m
-LEFT JOIN abteilungen a ON m.abteilung_id = a.id
-WHERE m.aktiv = 1;
+    b.id,
+    b.titel,
+    b.genre,
+    b.jahr,
+    COALESCE(au.vorname || ' ' || au.nachname, 'Unbekannt') AS autor
+FROM buecher b
+LEFT JOIN autoren au ON b.autor_id = au.id;
 
 -- Verwendung wie eine normale Tabelle:
-SELECT * FROM v_aktive_mitglieder WHERE abteilung = 'Vorstand';
+SELECT * FROM v_buecher_mit_autor WHERE genre = 'Roman';
 
 -- View löschen
-DROP VIEW IF EXISTS v_aktive_mitglieder;
+DROP VIEW IF EXISTS v_buecher_mit_autor;
 ```
 
 ---
@@ -629,7 +624,7 @@ DROP VIEW IF EXISTS v_aktive_mitglieder;
 **Aufgabe:**
 
 - Schreiben Sie die SQL-Befehle (create table …) um alle Tabellen in Ihrer Produktherstellung anzulegen.
-- Verwenden Sie hierzu das "SQLite Studio" oder "DB Browser".
+- Verwenden Sie hierzu Letos.
 
 Beispiel:
 
@@ -665,7 +660,7 @@ CREATE TABLE Ort (
 **Aufgabe:**
 
 - Schreiben Sie die SQL-Befehle (create table …) um alle Tabellen in Ihrer Schulverwaltungsdatenbank anzulegen.
-- Verwenden Sie hierzu das "SQLite Studio" oder "DB Browser".
+- Verwenden Sie hierzu Letos.
 
 Beispiel:
 
@@ -673,7 +668,8 @@ Beispiel:
 CREATE TABLE MITGLIED (
     ID            INTEGER        NOT NULL,
     VORNAME       VARCHAR(40)    NULL,
-    CONSTRAINT [PK_MITGLIED] PRIMARY KEY (ID)
+    CONSTRAINT PK_MITGLIED PRIMARY KEY (ID)
+);
 ```
 
 ---
@@ -701,4 +697,4 @@ CREATE TABLE MITGLIED (
 ---
 
 © 2026 Lukas Müller – Licensed under CC BY-NC-ND 4.0
-See [LICENSE](..\license.md) file for details.
+See [LICENSE](../license.md) file for details.

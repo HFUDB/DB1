@@ -20,7 +20,7 @@
     - [1.6.4. Fremdschlüssel-Abhängigkeiten beachten](#164-fremdschlüssel-abhängigkeiten-beachten)
   - [1.7. Transaktionen – Sicherheitsnetz bei DML](#17-transaktionen--sicherheitsnetz-bei-dml)
     - [1.7.1. Syntax](#171-syntax)
-    - [1.7.2. Praxisbeispiel: Guthaben-Transfer](#172-praxisbeispiel-guthaben-transfer)
+    - [1.7.2. Praxisbeispiel: Ausleihe verbuchen](#172-praxisbeispiel-ausleihe-verbuchen)
 - [2. Übungsaufgaben](#2-übungsaufgaben)
   - [2.1. Mutationen Kundendaten](#21-mutationen-kundendaten)
   - [2.2. Mutationen Blumendaten](#22-mutationen-blumendaten)
@@ -53,32 +53,34 @@
 | Data Definition Language       | DDL           | `CREATE`, `ALTER`, `DROP`        | Struktur definieren    |
 | Data Control Language          | DCL           | `GRANT`, `REVOKE`                | Berechtigungen steuern |
 
+> **Hinweis:** SQLite kennt kein Berechtigungssystem – `GRANT`/`REVOKE` gibt es dort **nicht** (Details siehe Kapitel „Schema implementieren"). `COMMIT`/`ROLLBACK` (Abschnitt 1.7) funktionieren in SQLite hingegen normal.
+
 In diesem Theorieblock fokussieren wir uns auf die drei zentralen DML-Befehle: `INSERT INTO`, `UPDATE` und `DELETE`.
 
 ---
 
 ## 1.3. Die Beispiel-Datenbank
 
-Alle Codebeispiele arbeiten mit folgender Tabelle einer fiktiven Buchhändlerei:
+Alle Codebeispiele arbeiten mit der bereits bekannten Bibliotheksdatenbank (siehe Kapitel „Schema implementieren"), insbesondere den Tabellen `kunden` und `buecher`:
 
 | **Spaltenname** | **Datentyp** | **Constraint**              | **Beschreibung** |
 | --------------- | ------------ | --------------------------- | ---------------- |
-| `kunden_id`     | `INTEGER`    | `PRIMARY KEY AUTOINCREMENT` | Eindeutige ID    |
-| `vorname`       | `TEXT`       | `NOT NULL`                  | Vorname          |
-| `nachname`      | `TEXT`       | `NOT NULL`                  | Nachname         |
+| `id`            | `INTEGER`    | `PRIMARY KEY AUTOINCREMENT` | Eindeutige ID    |
+| `name`          | `TEXT`       | `NOT NULL`                  | Name des Kunden  |
 | `email`         | `TEXT`       | `UNIQUE`                    | E-Mail-Adresse   |
-| `guthaben`      | `REAL`       | `DEFAULT 0.00`              | Kontostand CHF   |
+| `stadt`         | `TEXT`       |                             | Wohnort          |
 
 ```sql
 -- Tabelle erstellen (DDL – zur Referenz)
 CREATE TABLE kunden (
-    kunden_id  INTEGER  PRIMARY KEY AUTOINCREMENT,
-    vorname    TEXT     NOT NULL,
-    nachname   TEXT     NOT NULL,
-    email      TEXT     UNIQUE,
-    guthaben   REAL     DEFAULT 0.00
+    id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    name   TEXT    NOT NULL,
+    email  TEXT    UNIQUE,
+    stadt  TEXT
 );
 ```
+
+Für Beispiele mit relativen Mengenänderungen (z.B. „Lagerbestand verringern") verwenden wir zusätzlich `buecher.lagerbestand`, und für Transaktionsbeispiele die Tabelle `ausleihen` (`id`, `kunden_id`, `buch_id`, `ausleihdatum`, `rueckgabe`) – beide bereits aus dem vorherigen Kapitel bekannt.
 
 ---
 
@@ -115,29 +117,29 @@ VALUES
 
 ```sql
 -- Einen neuen Kunden einfügen
-INSERT INTO kunden (vorname, nachname, email, guthaben)
-VALUES ('Anna', 'Meier', 'anna.meier@beispiel.ch', 50.00);
+INSERT INTO kunden (name, email, stadt)
+VALUES ('Anna Meier', 'anna.meier@beispiel.ch', 'Zürich');
 
--- kunden_id wird automatisch vergeben (AUTOINCREMENT)
+-- id wird automatisch vergeben (AUTOINCREMENT)
 ```
 
 **Mehrere Datensätze einfügen:**
 
 ```sql
 -- Drei Kunden in einem Befehl einfügen
-INSERT INTO kunden (vorname, nachname, email, guthaben)
+INSERT INTO kunden (name, email, stadt)
 VALUES
-    ('Beat',   'Huber',  'beat.huber@beispiel.ch',   0.00),
-    ('Corina', 'Schmid', 'corina.schmid@beispiel.ch', 120.50),
-    ('David',  'Keller', 'david.keller@beispiel.ch',  15.75);
+    ('Beat Huber',    'beat.huber@beispiel.ch',    'Bern'),
+    ('Corina Schmid', 'corina.schmid@beispiel.ch', 'Basel'),
+    ('David Keller',  'david.keller@beispiel.ch',  'Luzern');
 ```
 
 **Einfügen mit DEFAULT-Wert:**
 
 ```sql
--- guthaben weglassen → DEFAULT 0.00 wird verwendet
-INSERT INTO kunden (vorname, nachname, email)
-VALUES ('Eva', 'Brunner', 'eva.brunner@beispiel.ch');
+-- lagerbestand weglassen → DEFAULT 0 wird verwendet
+INSERT INTO buecher (titel, autor_id, genre, jahr, preis)
+VALUES ('Der Report', 3, 'Thriller', 2020, 24.90);
 ```
 
 ---
@@ -149,7 +151,7 @@ Mit `UPDATE` werden **bestehende Datensätze** in einer Tabelle geändert. Die `
 > **Gefahr ohne WHERE:** Wird `UPDATE` ohne `WHERE` ausgeführt, werden **alle** Zeilen der Tabelle geändert!
 >
 > ```sql
-> UPDATE kunden SET guthaben = 0;  -- Alle Kunden haben plötzlich CHF 0.00!
+> UPDATE kunden SET stadt = 'unbekannt';  -- Alle Kunden haben plötzlich denselben Wohnort!
 > ```
 >
 > Immer zuerst mit `SELECT` prüfen, welche Zeilen betroffen wären.
@@ -171,44 +173,44 @@ UPDATE tabellenname
 -- E-Mail von Kundin Anna Meier aktualisieren
 UPDATE kunden
   SET email = 'a.meier@neuedomain.ch'
-  WHERE kunden_id = 1;
+  WHERE id = 1;
 ```
 
 **Mehrere Felder gleichzeitig ändern:**
 
 ```sql
--- Nachname und E-Mail nach Heirat aktualisieren
+-- Kundin ist umgezogen: Wohnort und E-Mail gleichzeitig aktualisieren
 UPDATE kunden
-  SET nachname = 'Huber-Meier',
-      email    = 'anna.huber-meier@beispiel.ch'
-  WHERE kunden_id = 1;
+  SET stadt = 'Luzern',
+      email = 'anna.meier@neuedomain.ch'
+  WHERE id = 1;
 ```
 
 **Berechnung auf bestehenden Wert:**
 
 ```sql
--- Guthaben um CHF 20.00 erhöhen (relativer Wert)
-UPDATE kunden
-  SET guthaben = guthaben + 20.00
-  WHERE kunden_id = 3;
+-- Lagerbestand um 1 verringern (z.B. Ausleihe verbuchen)
+UPDATE buecher
+  SET lagerbestand = lagerbestand - 1
+  WHERE id = 12;
 
--- Alle Guthaben um 5% erhöhen (kein WHERE = alle Zeilen betroffen!)
-UPDATE kunden
-  SET guthaben = guthaben * 1.05;
+-- Alle Buchpreise um 5% erhöhen (kein WHERE = alle Zeilen betroffen!)
+UPDATE buecher
+  SET preis = preis * 1.05;
 ```
 
 **Update mit komplexer WHERE-Bedingung:**
 
 ```sql
--- Nur Kunden mit negativem Guthaben auf 0 zurücksetzen
-UPDATE kunden
-  SET guthaben = 0.00
-  WHERE guthaben < 0;
+-- Rückgabe eines Buches verbuchen (Ausleihe abschliessen)
+UPDATE ausleihen
+  SET rueckgabe = date('now')
+  WHERE id = 42;
 
--- Bestimmten Kunden anhand E-Mail suchen
-UPDATE kunden
-  SET guthaben = guthaben + 50.00
-  WHERE email = 'beat.huber@beispiel.ch';
+-- Alle Bücher eines bestimmten Genres im Preis reduzieren
+UPDATE buecher
+  SET preis = preis * 0.9
+  WHERE genre = 'Sachbuch';
 ```
 
 ### 1.5.3. Best Practice: Erst SELECT, dann UPDATE
@@ -217,13 +219,13 @@ Vor jedem UPDATE empfiehlt es sich, mit `SELECT` zu prüfen, welche Zeilen betro
 
 ```sql
 -- Schritt 1: Prüfen welche Zeilen betroffen sind
-SELECT * FROM kunden
-  WHERE guthaben < 0;
+SELECT * FROM buecher
+  WHERE lagerbestand < 0;
 
 -- Schritt 2: Erst wenn das Ergebnis stimmt, UPDATE ausführen
-UPDATE kunden
-  SET guthaben = 0.00
-  WHERE guthaben < 0;
+UPDATE buecher
+  SET lagerbestand = 0
+  WHERE lagerbestand < 0;
 ```
 
 ---
@@ -256,7 +258,7 @@ DELETE FROM tabellenname;
 ```sql
 -- Kunden mit ID 5 löschen
 DELETE FROM kunden
-  WHERE kunden_id = 5;
+  WHERE id = 5;
 ```
 
 **Mehrere Datensätze löschen:**
@@ -266,9 +268,9 @@ DELETE FROM kunden
 DELETE FROM kunden
   WHERE email IS NULL;
 
--- Alle Kunden mit Guthaben unter CHF 1.00 löschen
-DELETE FROM kunden
-  WHERE guthaben < 1.00;
+-- Alte, nicht mehr vorrätige Bücher aussortieren
+DELETE FROM buecher
+  WHERE lagerbestand = 0 AND jahr < 1990;
 ```
 
 **Alle Zeilen einer Tabelle löschen:**
@@ -300,22 +302,22 @@ SQLite ignoriert Fremdschlüssel standardmässig – sie müssen explizit aktivi
 -- Fremdschlüsselprüfung aktivieren (muss pro Session gesetzt werden)
 PRAGMA foreign_keys = ON;
 
--- Beispiel: Tabelle bestellungen mit Fremdschlüssel auf kunden
--- CREATE TABLE bestellungen (
---     bestell_id INTEGER PRIMARY KEY AUTOINCREMENT,
---     kunden_id  INTEGER NOT NULL REFERENCES kunden(kunden_id),
---     artikel    TEXT    NOT NULL
+-- Beispiel: Tabelle ausleihen mit Fremdschlüsseln auf kunden und buecher
+-- CREATE TABLE ausleihen (
+--     id         INTEGER PRIMARY KEY AUTOINCREMENT,
+--     kunden_id  INTEGER NOT NULL REFERENCES kunden(id),
+--     buch_id    INTEGER NOT NULL REFERENCES buecher(id)
 -- );
 
 -- Mit aktivierten Fremdschlüsseln schlägt das Löschen fehl,
--- wenn Kunde ID 1 noch Bestellungen hat:
-DELETE FROM kunden WHERE kunden_id = 1;  -- FOREIGN KEY constraint failed!
+-- wenn Kunde ID 1 noch offene Ausleihen hat:
+DELETE FROM kunden WHERE id = 1;  -- FOREIGN KEY constraint failed!
 ```
 
 > **Lösungsstrategien bei Fremdschlüsseln:**
 >
-> 1. Zuerst abhängige Datensätze löschen: `DELETE FROM bestellungen WHERE kunden_id = 1;`
-> 2. Dann den Hauptdatensatz: `DELETE FROM kunden WHERE kunden_id = 1;`
+> 1. Zuerst abhängige Datensätze löschen: `DELETE FROM ausleihen WHERE kunden_id = 1;`
+> 2. Dann den Hauptdatensatz: `DELETE FROM kunden WHERE id = 1;`
 > 3. Oder: `ON DELETE CASCADE` beim Erstellen der Tabelle definieren
 
 ---
@@ -330,35 +332,36 @@ DELETE FROM kunden WHERE kunden_id = 1;  -- FOREIGN KEY constraint failed!
 BEGIN TRANSACTION;  -- Transaktion starten
 
     -- DML-Befehle hier ausführen
-    UPDATE kunden SET guthaben = guthaben - 100 WHERE kunden_id = 1;
-    UPDATE kunden SET guthaben = guthaben + 100 WHERE kunden_id = 2;
+    UPDATE buecher SET lagerbestand = lagerbestand - 1 WHERE id = 12;
+    INSERT INTO ausleihen (kunden_id, buch_id, ausleihdatum) VALUES (3, 12, date('now'));
 
 COMMIT;    -- Alle Änderungen dauerhaft speichern
 -- oder:
 ROLLBACK;  -- Alle Änderungen rückgängig machen
 ```
 
-### 1.7.2. Praxisbeispiel: Guthaben-Transfer
+### 1.7.2. Praxisbeispiel: Ausleihe verbuchen
 
-Ein typischer Anwendungsfall: Betrag von Konto A nach Konto B übertragen. Wenn einer der Schritte scheitert, soll nichts geändert werden.
+Ein typischer Anwendungsfall: Ein Buch wird ausgeliehen – dabei müssen **zwei** Änderungen atomar zusammenpassen: der Lagerbestand sinkt, und die Ausleihe wird protokolliert. Würde nur einer der beiden Schritte ausgeführt (z.B. weil die Applikation dazwischen abstürzt), wäre die Datenbank inkonsistent.
 
 ```sql
 BEGIN TRANSACTION;
 
--- Schritt 1: Betrag abziehen
-UPDATE kunden
-SET guthaben = guthaben - 100.00
-WHERE kunden_id = 1;
+-- Schritt 1: Lagerbestand verringern
+UPDATE buecher
+SET lagerbestand = lagerbestand - 1
+WHERE id = 12 AND lagerbestand > 0;
 
--- Schritt 2: Betrag gutschreiben
-UPDATE kunden
-SET guthaben = guthaben + 100.00
-WHERE kunden_id = 2;
+-- Schritt 2: Ausleihe protokollieren
+INSERT INTO ausleihen (kunden_id, buch_id, ausleihdatum)
+VALUES (3, 12, date('now'));
 
 -- Nur wenn beide Schritte ohne Fehler verlaufen: speichern
 COMMIT;
 ```
 
+> Schlägt Schritt 1 fehl (z.B. weil `lagerbestand` bereits 0 ist und die `WHERE`-Bedingung keine Zeile trifft), lässt sich das vor dem `COMMIT` mit einem `SELECT changes();` oder einer Kontrollabfrage prüfen und stattdessen ein `ROLLBACK` ausführen – genau dafür ist die Transaktion da.
+>
 > **ACID-Prinzip:** Transaktionen folgen dem ACID-Prinzip:
 >
 > - **A**tomicity – Alles oder nichts
@@ -386,16 +389,15 @@ COMMIT;
 | **Zeitbedarf**          | 20 min                                                   |
 | **Lösungselemente**     | SQL Skript File                                          |
 
-Erstellen Sie die Tabelle `kunden` und lösen Sie folgende Aufgaben in der SQLite-Shell oder in DB Browser for SQLite.
+Erstellen Sie die Tabelle `kunden` und lösen Sie folgende Aufgaben in Letos.
 
 ```sql
 -- Tabelle erstellen (DDL – zur Referenz)
 CREATE TABLE kunden (
-    kunden_id  INTEGER  PRIMARY KEY AUTOINCREMENT,
-    vorname    TEXT     NOT NULL,
-    nachname   TEXT     NOT NULL,
-    email      TEXT     UNIQUE,
-    guthaben   REAL     DEFAULT 0.00
+    id     INTEGER  PRIMARY KEY AUTOINCREMENT,
+    name   TEXT     NOT NULL,
+    email  TEXT     UNIQUE,
+    stadt  TEXT
 );
 ```
 
@@ -403,9 +405,9 @@ CREATE TABLE kunden (
 
 **a)** Fügen Sie folgende drei Kunden **einzeln** ein:
 
-- Franziska Gross, <franziska.gross@hf.ch>, Guthaben 75.00
-- Marco Brun, <marco.brun@hf.ch>, Guthaben 0.00
-- Selina Vogel (keine E-Mail), Guthaben 200.00
+- Franziska Gross, <franziska.gross@hf.ch>, Bern
+- Marco Brun, <marco.brun@hf.ch>, Basel
+- Selina Vogel (keine E-Mail), Chur
 
 **b)** Fügen Sie alle drei Kunden in einem **einzigen** `INSERT`-Befehl ein.
 
@@ -413,11 +415,11 @@ CREATE TABLE kunden (
 
 **Aufgabe 2 – UPDATE:**
 
-**a)** Erhöhen Sie das Guthaben von Franziska Gross um CHF 25.00.
+**a)** Ändern Sie den Wohnort von Franziska Gross auf „Thun".
 
 **b)** Ändern Sie die E-Mail von Marco Brun auf: `m.brun@neuedomain.ch`
 
-**c)** Setzen Sie das Guthaben **aller** Kunden mit einem Guthaben unter CHF 50.00 auf CHF 50.00.
+**c)** Setzen Sie den Wohnort **aller** Kunden ohne Stadt-Angabe auf „unbekannt".
 
 **d)** Führen Sie zuerst einen `SELECT` aus, um zu prüfen, welche Kunden betroffen wären.
 
@@ -435,11 +437,11 @@ CREATE TABLE kunden (
 
 **Aufgabe 4 – Transaktion (Bonusaufgabe):**
 
-Führen Sie einen Guthaben-Transfer von CHF 50.00 von Kunde 1 zu Kunde 3 durch:
+Sofern bereits vorhanden, verwenden Sie zusätzlich die Tabellen `buecher` und `ausleihen` aus dem vorherigen Kapitel und verbuchen Sie die Ausleihe von Buch-ID 5 durch Kunde 1:
 
 1. Starten Sie eine Transaktion.
-2. Ziehen Sie CHF 50.00 von Kunde 1 ab.
-3. Schreiben Sie CHF 50.00 Kunde 3 gut.
+2. Verringern Sie den `lagerbestand` des Buchs um 1.
+3. Fügen Sie einen neuen Datensatz in `ausleihen` ein (`kunden_id`, `buch_id`, `ausleihdatum`).
 4. Prüfen Sie das Ergebnis mit `SELECT`.
 5. Erst dann: `COMMIT`.
 
@@ -527,4 +529,4 @@ VALUES (value [,value] ...)
 ---
 
 © 2026 Lukas Müller – Licensed under CC BY-NC-ND 4.0
-See [LICENSE](..\license.md) file for details.
+See [LICENSE](../license.md) file for details.

@@ -348,4 +348,4 @@ Zeichnen Sie (von Hand oder mit einem Tool Ihrer Wahl) das vollständige ERM fü
 ---
 
 © 2026 Lukas Müller – Licensed under CC BY-NC-ND 4.0
-See [LICENSE](..\license.md) file for details.
+See [LICENSE](../license.md) file for details.

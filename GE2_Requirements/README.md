@@ -3,7 +3,7 @@
 | **Informatik\*in / Systemtechniker\*in HF** | **Datenbankentwicklung** | ![logo](../x_gitres/logo.png) |
 
 - [1. Voraussetzungen / Softwareinstallationen](#1-voraussetzungen--softwareinstallationen)
-  - [1.1. Leto / SQLite Studio](#11-leto--sqlite-studio)
+  - [1.1. Letos / SQLite Studio](#11-letos--sqlite-studio)
   - [1.2. Visual Studio Code](#12-visual-studio-code)
   - [1.3. Extension Draw.io Integration](#13-extension-drawio-integration)
     - [1.3.1. Extension Material Icon Theme](#131-extension-material-icon-theme)
@@ -17,7 +17,7 @@
 
 # 1. Voraussetzungen / Softwareinstallationen
 
-## 1.1. Leto / SQLite Studio
+## 1.1. Letos / SQLite Studio
 
 - [How to Download & Install Letos](https://letos.org/)
   - ![Letos](./x_gitres/letos_download.png)
@@ -28,7 +28,7 @@
 
 **VS Code** ist ein leichtgewichtiger Editor, der auf Windows, macOS und Linux läuft.
 
-![visual studio code](./x_gitres/visual-studio-code.jpg)
+![Visual Studio Code](./x_gitres/visual-studio-code.jpg)
 
 [Download Visual Studio Code](https://code.visualstudio.com/)
 
@@ -83,4 +83,4 @@ Teste soweit möglich, dass alle Komponenten ohne Fehler ausgeführt werden und fu
 ---
 
 © 2026 Lukas Müller – Licensed under CC BY-NC-ND 4.0
-See [LICENSE](..\license.md) file for details.
+See [LICENSE](../license.md) file for details.

@@ -20,10 +20,9 @@
     - [1.10.3. EXISTS – Existenzprüfung](#1103-exists--existenzprüfung)
   - [1.11. Weiterführende Ressourcen](#111-weiterführende-ressourcen)
 - [2. Aufgaben](#2-aufgaben)
-  - [2.1. Datenbank Bibliothek erstellen](#21-datenbank-bibliothek-erstellen)
-  - [2.2. Abfragen Bibliothek Datenbank](#22-abfragen-bibliothek-datenbank)
-  - [2.3. Praxisprojekt: Bibliotheksauswertung](#23-praxisprojekt-bibliotheksauswertung)
-  - [2.4. Abfragen Schulverwaltungsdatenbank](#24-abfragen-schulverwaltungsdatenbank)
+  - [2.1. Abfragen Bibliothek Datenbank (JOIN)](#21-abfragen-bibliothek-datenbank-join)
+  - [2.2. Praxisprojekt: Bibliotheksauswertung](#22-praxisprojekt-bibliotheksauswertung)
+  - [2.3. Abfragen Schulverwaltungsdatenbank](#23-abfragen-schulverwaltungsdatenbank)
 
 ---
 
@@ -356,30 +355,7 @@ WHERE EXISTS (
 
 # 2. Aufgaben
 
-## 2.1. Datenbank Bibliothek erstellen
-
-| **Vorgabe**             | **Beschreibung**                                    |
-| :---------------------- | :-------------------------------------------------- |
-| **Lernziele**           | Datenbank Schema implementieren und Datein einfügen |
-| **Sozialform**          | Einzelarbeit                                        |
-| **Auftrag**             | siehe unten                                         |
-| **Hilfsmittel**         |                                                     |
-| **Erwartete Resultate** |                                                     |
-| **Zeitbedarf**          | 15 min                                              |
-| **Lösungselemente**     | Beispieldatenbank `bibliothek.db`                   |
-
-**Datenbank und Initial Daten wie folgt erstellen:**
-
-- Erstelle mit **[SQLiteStudio](https://sqlitestudio.pl)** oder **[DB Browser for SQLite](https://sqlitebrowser.org)** eine neue Datenbank (`bibliothek.db`)
-- Führe die SQL-Befehle der Datei ![Bibliothek.sql](./x_gitres/bibliothek_daten.sql) aus.
-- Prüfe ob alle vier Tabellen angelegt und mit Daten befüllt wurden.
-
-> **Setup**
-> Erstellt die Datenbank lokal: `sqlite3 bibliothek.db < schema.sql`
-
----
-
-## 2.2. Abfragen Bibliothek Datenbank
+## 2.1. Abfragen Bibliothek Datenbank (JOIN)
 
 | **Vorgabe**             | **Beschreibung**                                                            |
 | :---------------------- | :-------------------------------------------------------------------------- |
@@ -397,36 +373,12 @@ WHERE EXISTS (
 
 **Schreibe eine Abfrage, die folgendes ausgibt:**
 
-**A1 - Einfache Abfragen mit Spaltenselektion:**
-
-1. Vorname und Nachname aller Autoren als eine Spalte `Autor`
-2. Das Erscheinungsjahr der Bücher
-3. Den Preis erhöht um 10% als `Neuer_Preis`
-4. Sortiert nach Erscheinungsjahr absteigend
-
-**A2 - Abfragen mit Zeilenrestriktionen (WHERE Klausel):**
-
-1. Alle Bücher, die zwischen 2000 und 2010 erschienen sind und mehr als 15 CHF kosten
-2. Alle Kunden aus Zürich oder Bern
-3. Alle Bücher, deren Titel das Wort «Welt» enthält
-4. Alle Autoren, bei denen das Geburtsjahr nicht bekannt ist
-5. Alle Bücher mit einem Lagerbestand von 0 (ausverkauft)
-
-**A3 - Abfragen mit Aggregatfunktionen und Gruppierungen:**
-
-1. Wie viele Bücher gibt es pro Erscheinungsjahr? (Sortiert nach Jahr absteigend)
-2. Welche Genres haben einen Durchschnittspreis über 20 CHF?
-3. Welche Stadt hat die meisten Kunden? (Top 3)
-4. Wie viele Bücher wurden nach 2000 veröffentlicht und kosten unter 20 CHF?
-
-**A4 - Abfragen mit mehreren Tabellen (JOIN):**
-
 1. Listet alle Bücher mit dem vollständigen Autorennamen und dem Land des Autors
 2. Zeigt alle Kunden, die noch **nie** ein Buch ausgeliehen haben
 3. Findet die 5 beliebtesten Bücher (meiste Ausleihen)
 4. Welche Genres werden von Autoren aus der Schweiz geschrieben?
 
-**A5 - Komplexe Abfragen mit Unterabfragen (Herausforderungsaufgaben):**
+**Komplexe Abfragen mit Unterabfragen (Herausforderungsaufgaben):**
 
 1. Welche Bücher kosten mehr als das teuerste Buch im Genre «Roman»?
 2. Welche Autoren haben mehr Bücher als der Durchschnitt aller Autoren?
@@ -434,7 +386,7 @@ WHERE EXISTS (
 
 ---
 
-## 2.3. Praxisprojekt: Bibliotheksauswertung
+## 2.2. Praxisprojekt: Bibliotheksauswertung
 
 | **Vorgabe**             | **Beschreibung**                                    |
 | :---------------------- | :-------------------------------------------------- |
@@ -473,7 +425,7 @@ Setzt das gesamte Wissen ein. Erstellt einen vollständigen Bibliotheksbericht.
 
 ---
 
-## 2.4. Abfragen Schulverwaltungsdatenbank
+## 2.3. Abfragen Schulverwaltungsdatenbank
 
 | **Vorgabe**             | **Beschreibung**                                    |
 | :---------------------- | :-------------------------------------------------- |
@@ -555,4 +507,4 @@ Setzt das gesamte Wissen ein. Erstellt einen vollständigen Bibliotheksbericht.
 ---
 
 © 2026 Lukas Müller – Licensed under CC BY-NC-ND 4.0
-See [LICENSE](..\license.md) file for details.
+See [LICENSE](../license.md) file for details.
