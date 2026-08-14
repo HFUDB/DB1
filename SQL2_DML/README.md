@@ -2,7 +2,7 @@
 | ------------------------------------------- | ------------------------ | ----------------------------- |
 | **Informatik\*in / Systemtechniker\*in HF** | **Datenbankentwicklung** | ![logo](../x_gitres/logo.png) |
 
-- [1. DML – Data Manipulation Language](#1-dml--data-manipulation-language)
+- [1. Data Manipulation Language (DML)](#1-data-manipulation-language-dml)
   - [1.1. Lernziele](#11-lernziele)
   - [1.2. Einführung: Was ist DML?](#12-einführung-was-ist-dml)
   - [1.3. Die Beispiel-Datenbank](#13-die-beispiel-datenbank)
@@ -30,7 +30,7 @@
 
 </br>
 
-# 1. DML – Data Manipulation Language
+# 1. Data Manipulation Language (DML)
 
 ## 1.1. Lernziele
 

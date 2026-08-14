@@ -2,7 +2,7 @@
 | ------------------------------------------- | ------------------------ | ----------------------------- |
 | **Informatik\*in / Systemtechniker\*in HF** | **Datenbankentwicklung** | ![logo](../x_gitres/logo.png) |
 
-- [1. SQL - Abfragen](#1-sql---abfragen)
+- [1. SQL - Abfragen (DQL)](#1-sql---abfragen-dql)
   - [1.1. Lernziele](#11-lernziele)
   - [1.2. Ausgangslage: Die Übungsdatenbank](#12-ausgangslage-die-übungsdatenbank)
   - [1.3. Grundstruktur des SELECT-Befehls](#13-grundstruktur-des-select-befehls)
@@ -38,7 +38,7 @@
 
 </br>
 
-# 1. SQL - Abfragen
+# 1. SQL - Abfragen (DQL)
 
 ## 1.1. Lernziele
 

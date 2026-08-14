@@ -654,8 +654,8 @@ CREATE TABLE Ort (
 
 **Ausgangssituation:**
 
-- Sie verwenden das Datenbank Modell vorangegangener Aufgabe.
-- Implementieren Sie dieses Modell und fügen Sie die aufgelisteten Daten ein.
+- Sie verwenden das Datenbank Modell aus [SQL1_Model, Aufgabe 2.1.A](../SQL1_Model/README.md#a-schulverwaltung).
+- Implementieren Sie dieses Modell in SQLite und fügen Sie Testdaten ein.
 
 **Aufgabe:**
 
