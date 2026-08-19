@@ -24,6 +24,7 @@
 - [2. Aufgaben](#2-aufgaben)
   - [2.1. Datenbank vs. Dateisystem](#21-datenbank-vs-dateisystem)
   - [2.2. Daten speichern und analysieren](#22-daten-speichern-und-analysieren)
+  - [2.3. Gruppenarbeit Datenbankmodelle](#23-gruppenarbeit-datenbankmodelle)
 
 ---
 
@@ -96,7 +97,7 @@ Die Probleme der Datei-Systeme können mit Hilfe der Datenbanktechnologie gelös
 
 Alle Anwendungssoftware arbeitet mit denselben Daten, die in einer zentralen Datenhaltungskomponente verwaltet werden. Der Gesamtbestand der Daten wird nun als Datenbank bezeichnet. Anwendungssoftware kann nur über eine zusätzliche Layer – hier **DBMS** genannt -  auf die Daten zugreifen.
 
-Dieses Phänomen ist keineswegs auf Kleinbetriebe beschränkt. Auch in grossen Unternehmen entstehen historisch gewachsene „Datenfriedhöfe": Insellösungen, die über Jahre parallel zueinander gepflegt wurden, ohne dass jemand mehr den vollständigen Überblick hat, welche Datei die „Wahrheit" enthält. Die Datenmodellierung, die wir in Kapitel 2 einführen, ist der methodische Gegenentwurf zu diesem Wildwuchs: Sie zwingt uns, vor der technischen Umsetzung bewusst zu entscheiden, welche Daten es gibt, wie sie zusammenhängen und wo sie **einmalig** und **verbindlich** gespeichert werden.
+Dieses Phänomen ist keineswegs auf Kleinbetriebe beschränkt. Auch in grossen Unternehmen entstehen historisch gewachsene „Datenfriedhöfe": Insellösungen, die über Jahre parallel zueinander gepflegt wurden, ohne dass jemand mehr den vollständigen Überblick hat, welche Datei die „Wahrheit" enthält. Die Datenmodellierung, die wir später kennenlernen, ist der methodische Gegenentwurf zu diesem Wildwuchs: Sie zwingt uns, vor der technischen Umsetzung bewusst zu entscheiden, welche Daten es gibt, wie sie zusammenhängen und wo sie **einmalig** und **verbindlich** gespeichert werden.
 
 ![Datenbanksystem](./x_gitres/databasesystem.png)
 
@@ -137,7 +138,7 @@ Jedes DBMS gliedert sich funktional in drei Komponenten, denen jeweils eine Teil
 3. **DCL – Data Control Language** (Integritäts-/Zugriffskomponente): steuert Zugriffsrechte und Transaktionen.
    Beispiele: `GRANT`, `REVOKE`, `COMMIT`, `ROLLBACK`
 
-> Diese Dreiteilung begegnet uns während des ganzen Kurses wieder – Kapitel 6 widmet sich der DDL, Kapitel 7–9 der DML, und Transaktionen/Rechte werden punktuell gestreift.
+> Diese Dreiteilung begegnet uns während des ganzen Kurses wieder – Schema Implementierung widmet sich der DDL, Datenmanipulation und Abfragen der DML und Transaktionen/Rechte (DCL) werden punktuell gestreift.
 
 Diese Einteilung ist nicht nur akademisch: Sie hilft, SQL-Befehle im Alltag rasch richtig einzuordnen. Wer sich fragt „verändere ich hier die Struktur der Datenbank oder nur ihre Inhalte?" kann fast immer sofort erkennen, ob ein Befehl der DDL oder der DML zuzuordnen ist. Ein `CREATE TABLE` verändert das Data Dictionary (die Struktur), ein `INSERT` verändert nur den Dateninhalt einer bereits bestehenden Tabelle.
 
@@ -187,7 +188,7 @@ Im Lauf der Zeit haben sich verschiedene Modelle etabliert, wie Daten strukturie
 
 ### 1.7.1. Historische Entwicklung im Kurzüberblick
 
-Die ersten Datenbanksysteme der 1960er-Jahre basierten auf hierarchischen und Netzwerkmodellen – sie waren eng an die physische Speicherstruktur gekoppelt und dadurch schwer zu warten, sobald sich Anforderungen änderten. Der entscheidende konzeptionelle Durchbruch gelang 1970 mit dem relationalen Modell (Edgar F. Codd), das Daten und ihre Struktur strikt von der physischen Speicherung trennte. Diese sogenannte **Datenunabhängigkeit** ist bis heute einer der zentralen Vorteile relationaler Systeme und wird in Kapitel 2.11 (3-Schema-Architektur, sofern im Kurs vertieft) nochmals aufgegriffen.
+Die ersten Datenbanksysteme der 1960er-Jahre basierten auf hierarchischen und Netzwerkmodellen – sie waren eng an die physische Speicherstruktur gekoppelt und dadurch schwer zu warten, sobald sich Anforderungen änderten. Der entscheidende konzeptionelle Durchbruch gelang 1970 mit dem relationalen Modell (Edgar F. Codd), das Daten und ihre Struktur strikt von der physischen Speicherung trennte. Diese sogenannte **Datenunabhängigkeit** ist bis heute einer der zentralen Vorteile relationaler Systeme.
 
 In den letzten 15 Jahren hat sich daneben die NoSQL-Bewegung etabliert – meist getrieben durch Anforderungen extrem grosser, verteilter Webanwendungen (z.B. soziale Netzwerke), bei denen strikte Konsistenz teilweise zugunsten von Skalierbarkeit und Verfügbarkeit aufgegeben wird. Für die allermeisten betrieblichen Anwendungen – auch in der Automatisierungstechnik – bleibt das relationale Modell jedoch die richtige Wahl, da hier Datenkonsistenz (z.B. „jede Wartung muss einer existierenden Maschine zugeordnet sein") in aller Regel wichtiger ist als extreme horizontale Skalierbarkeit.
 
@@ -216,7 +217,7 @@ Einige Beobachtungen, die sich direkt aus dieser Grafik ableiten lassen:
 - **Relationale Systeme dominieren nach wie vor klar die Spitze.** Die vier meistgenutzten Systeme überhaupt – Oracle, MySQL, Microsoft SQL Server und PostgreSQL – sind alle primär relational. Zusammengenommen liegen sie weit vor dem stärksten NoSQL-System.
 - **MongoDB ist die mit Abstand populärste NoSQL-Datenbank** und belegt Rang 5 der Gesamtliste – ein Beleg dafür, dass dokumentenorientierte Datenbanken für bestimmte Anwendungsfälle (flexible, sich häufig ändernde Datenstrukturen, z.B. in agilen Webprojekten) einen festen Platz im Markt haben.
 - **Redis, Elasticsearch und Apache Cassandra** zeigen die Bandbreite von NoSQL: Key-Value-Speicher (Caching, Sessions), Suchmaschinen-Engines (Volltextsuche) und Wide-Column-Stores (verteilte, hochskalierbare Schreiblast) lösen jeweils sehr spezifische technische Probleme, für die ein relationales System weniger geeignet wäre.
-- **SQLite** belegt Rang 12 – bemerkenswert für ein System ganz ohne eigenen Server-Prozess und Marketingbudget. Dies unterstreicht, weshalb SQLite eine sinnvolle Wahl für diesen Kurs ist: Es ist kein Nischenprodukt, sondern eines der am breitesten eingesetzten Datenbanksysteme weltweit (siehe Kapitel 1.3).
+- **SQLite** belegt Rang 12 – bemerkenswert für ein System ganz ohne eigenen Server-Prozess und Marketingbudget. Dies unterstreicht, weshalb SQLite eine sinnvolle Wahl für diesen Kurs ist: Es ist kein Nischenprodukt, sondern eines der am breitesten eingesetzten Datenbanksysteme weltweit.
 - **Multi-Model-Systeme nehmen zu.** Viele der klassisch relationalen Systeme (Oracle, PostgreSQL, SQL Server) unterstützen inzwischen zusätzlich Dokument-, Graph- oder Vektordaten innerhalb derselben Engine. Die früher klare Trennung „relational vs. NoSQL" verschwimmt damit zunehmend.
 
 ### 1.8.2. Einordnung für den Kurs
@@ -240,7 +241,7 @@ Für praktisch alle Anwendungen im betrieblichen Umfeld – auch für die in die
 |                         | DDL, DML und DCL konkreten Aufgaben zuordnen                     |
 | **Sozialform**          | Einzelarbeit, anschliessend Besprechung im Plenum                |
 | **Auftrag**             | siehe unten                                                      |
-| **Hilfsmittel**         | Kapitel 1 des Kursskripts                                        |
+| **Hilfsmittel**         | Kursskripts                                                      |
 | **Erwartete Resultate** | Schriftliche Kurzantworten zu den 4 Teilaufgaben                 |
 | **Zeitbedarf**          | 30 min                                                           |
 | **Lösungselemente**     | Musterantworten zu allen Teilaufgaben                            |
@@ -292,3 +293,38 @@ Erstelle in Excel einen Vorschlag (Entwurf) wie diese Datenbasis gespeichert wer
 
 **Aufgabe 2 – Problemanalyse:**
 Überlege welche Probleme bei der Verarbeitung (Einfüge-, Änderung- und Löschoperationen) der Daten entstehen können und fasse diese kurz zusammen.
+
+---
+
+## 2.3. Gruppenarbeit Datenbankmodelle
+
+| **Vorgabe**             | **Beschreibung**                                                             |
+| :---------------------- | :--------------------------------------------------------------------------- |
+| **Lernziele**           | Eine Einsicht über die verschiedenen Datenbankmodelle                        |
+|                         | Sie verstehen die unterschiedlichen Datenstrukturen und deren Einsatzgebiete |
+| **Sozialform**          | Gruppenarbeit max. 3-4 Mitgliedern                                           |
+| **Auftrag**             | siehe unten                                                                  |
+| **Hilfsmittel**         |                                                                              |
+| **Erwartete Resultate** |                                                                              |
+| **Zeitbedarf**          | 20min Recherche über Datenbankmodell, 10min Kurzpräsentation                 |
+| **Lösungselemente**     | Excel Datei mit Beispieldaten                                                |
+
+Ermitteln Sie alle wichtigen Informationen über das Ihnen zugeteilte Datenbankmodell und erstellen Sie eine kleine Zusammenfassung. Dabei sollen folgende Punkte untersucht werden:
+
+- Grundprinzip der Datenstruktur
+- Spezifische Merkmale
+- Einsatzbereich (Beispiele)
+- Vor-/ Nachteile
+- Markübersicht der Produkte
+
+Stellen Sie Ihre Ergebnisse mittels einer Kurzpräsentation der Klasse vor. Verwenden Sie dabei die Hilfsmittel wie Flow-Charts, Beamer, Wandtafel usw. und verweisen Sie ggf. auf weitere die Literatur.
+
+**Auswahl Datenbankmodell:**
+
+In einzelnen Gruppen sollen folgende Datenbankmodelle untersucht werden:
+
+- Hierarchische Datenbank u. Netzwerk Datenbanken
+- Relationale Datenbanken
+- Objektrelationale Datenbanken und Objektorientierte Datenbanken
+- XML Datenbanken
+- NoSQL Datenbanken
