@@ -148,7 +148,7 @@ Für jede Beziehung wird angegeben, in welchem Mengenverhältnis die Entitätsme
 **1:n-Beziehung** – eine Entität der einen Seite kann mit *mehreren* Entitäten der anderen Seite in Beziehung stehen, umgekehrt aber nur mit einer.
 
 ```bash
-┌───────────┐  (0,n)      (1,1)  ┌──────────────────┐
+┌───────────┐  (1,1)      (0,n)  ┌──────────────────┐
 │ Techniker │──── führt durch ───│    Wartung       │
 └───────────┘                    └──────────────────┘
 ```
@@ -189,12 +189,12 @@ In der Praxis (und in Prüfungen) sind folgende zwei Fehler besonders häufig:
 > „Techniker führen Wartungen an Maschinen durch. Bei jeder Wartung werden ein oder mehrere Ersatzteile verbaut, und dasselbe Ersatzteil kann bei verschiedenen Wartungen zum Einsatz kommen."
 
 ```bash
-┌────────────┐  (0,n)        (1,1)  ┌────────────┐  (1,1)         (0,n)  ┌────────────┐
+┌────────────┐  (1,1)        (0,n)  ┌────────────┐  (0,n)         (1,1)  ┌────────────┐
 │ Techniker  │───── führt durch ────│  Wartung   │──── betrifft ─────────│  Maschine  │
 └────────────┘                      └─────┬──────┘                       └────────────┘
                                           │
-                                    (1,n) │ benötigt
-                                          │ (0,n)
+                                    (0,n) │ benötigt
+                                          │ (1,n)
                                     ┌─────┴──────┐
                                     │ Ersatzteil │
                                     └────────────┘
