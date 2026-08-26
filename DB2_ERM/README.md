@@ -264,7 +264,7 @@ Rekursive Beziehungen sind fortgeschrittener Stoff und werden in diesem Kurs nur
 | **Hilfsmittel**         |                                                                               |
 | **Erwartete Resultate** |                                                                               |
 | **Zeitbedarf**          | 15 min                                                                        |
-| **Lösungselemente**     | Vollständige Lösung mit Kardinalität auf Papier oder als DIA Datei            |
+| **Lösungselemente**     | Vollständige Lösung mit Kardinalität auf Papier oder als Draw.io Datei        |
 
 - Füge sinnvolle Beziehungen zwischen den folgenden Entitäten ein.
 - Verwenden Sie dabei die Min, Max Notation ([1,1], [1,n] etc.)
@@ -315,7 +315,7 @@ Ein **ERM** und relationales Datenmodell aus vorgegebenen Regeln ableiten und vo
 
 **Auftrag:**
 
-Entity-Relationship-Modell:** Stelle den obigen Sachverhalt im Entity-Relationship-Modell (ERM) auf einem Blatt Papier oder elektronisch (dia) dar.
+**Entity-Relationship-Modell:** Stelle den obigen Sachverhalt im Entity-Relationship-Modell (ERM) auf einem Blatt Papier oder elektronisch (draw.io) dar.
 
 ---
 
