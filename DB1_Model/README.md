@@ -33,8 +33,8 @@ Nach diesem Kapitel können Sie:
 - [ ] den Zweck der Datenmodellierung im Gesamtprozess der Datenbankentwicklung erklären
 - [ ] die Begriffe **Entität**, **Entitätsmenge** und **Attribut** definieren und an eigenen Beispielen anwenden
 - [ ] die vier Schritte von der Anforderung bis zur fertigen Datenbank benennen und deren Zweck erklären
-- [ ] mittels Substantiv-Analyse aus einer Anforderungsbeschreibung Kandidaten für Entitätsmengen ableiten
-- [ ] entscheiden, ob ein Sachverhalt als eigene Entitätsmenge oder als Attribut modelliert werden sollte
+- [ ] mittels Substantiv-Analyse aus einer Anforderungsbeschreibung Kandidaten für **Entitätsmengen** ableiten
+- [ ] entscheiden, ob ein Sachverhalt als eigene **Entitätsmenge** oder als **Attribut** modelliert werden sollte
 
 ---
 
@@ -227,9 +227,9 @@ Die Substantiv-Analyse ist ein hilfreicher **Einstieg**, aber kein mechanisches 
 
 Lesen Sie folgende Anforderungsbeschreibung eines Werkzeuglagers:
 
-> „Unser Werkzeuglager verwaltet Werkzeuge (z.B. Bohrer, Fräser), die in Regalen an bestimmten Lagerplätzen liegen. Jedes Werkzeug stammt von einem bestimmten Hersteller. Mitarbeitende können Werkzeuge ausleihen; dabei wird festgehalten, wer wann welches Werkzeug ausgeliehen und wann er es zurückgegeben hat."
+> **„Unser Werkzeuglager verwaltet Werkzeuge (z.B. Bohrer, Fräser), die in Regalen an bestimmten Lagerplätzen liegen. Jedes Werkzeug stammt von einem bestimmten Hersteller. Mitarbeitende können Werkzeuge ausleihen, dabei wird festgehalten, wer wann welches Werkzeug ausgeliehen und wann er es zurückgegeben hat."**
 
-1. Markieren Sie alle Substantive, die Kandidaten für Entitätsmengen sein könnten.
-2. Bestimmen Sie daraus 4–5 sinnvolle Entitätsmengen (manche Substantive gehören eher als Attribut zu einer anderen Entitätsmenge, z.B. „Lagerplatz" – überlegen Sie, ob es eine eigene Entitätsmenge oder ein Attribut ist).
-3. Notieren Sie zu jeder gewählten Entitätsmenge mindestens 3 passende Attribute.
-4. Diskutieren Sie zu zweit: Ist „Ausleihe" eine eigenständige Entitätsmenge oder nur eine Beziehung zwischen Mitarbeitendem und Werkzeug? Begründen Sie beide Sichtweisen.
+1. Markieren Sie alle **Substantive**, die Kandidaten für **Entitätsmengen** sein könnten.
+2. Bestimmen Sie daraus 4–5 sinnvolle **Entitätsmengen** (manche Substantive gehören eher als Attribut zu einer anderen **Entitätsmenge**, z.B. „Lagerplatz" – überlegen Sie, ob es eine eigene **Entitätsmenge** oder ein **Attribut** ist).
+3. Notieren Sie zu jeder gewählten **Entitätsmenge** mindestens 3 passende **Attribute**.
+4. Diskutieren Sie zu zweit: Ist **„Ausleihe**" eine eigenständige **Entitätsmenge** oder nur eine **Beziehung** zwischen Mitarbeitendem und Werkzeug? Begründen Sie beide Sichtweisen.

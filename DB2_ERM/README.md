@@ -31,11 +31,11 @@
 
 Nach diesem Kapitel können Sie:
 
-- [ ] Entitätsmengen, Attribute und Beziehungen in einem ERM grafisch darstellen
-- [ ] Kardinalitäten (min/max-Notation) korrekt bestimmen und einzeichnen
-- [ ] 1:1-, 1:n- und m:n-Beziehungen unterscheiden und Beispiele aus der Praxis zuordnen
-- [ ] ein vollständiges ERM zu einer gegebenen Anforderungsbeschreibung selbständig erstellen
-- [ ] rekursive Beziehungen erkennen und grob einordnen
+- [ ] **Entitätsmengen**, **Attribute** und **Beziehungen** in einem **ERM** grafisch darstellen
+- [ ] **Kardinalitäten (min/max-Notation)** korrekt bestimmen und einzeichnen
+- [ ] **1:1-, 1:n- und m:n-Beziehungen** unterscheiden und Beispiele aus der Praxis zuordnen
+- [ ] ein vollständiges **ERM** zu einer gegebenen Anforderungsbeschreibung selbständig erstellen
+- [ ] **rekursive Beziehungen** erkennen und grob einordnen
 
 ---
 
@@ -135,7 +135,7 @@ Für jede Beziehung wird angegeben, in welchem Mengenverhältnis die Entitätsme
 
 **1:1-Beziehung** – eine Entität der einen Seite steht mit *höchstens einer* Entität der anderen Seite in Beziehung.
 
-```console
+```bash
 ┌───────────┐  (1,1)      (0,1)  ┌──────────────────┐
 │  Maschine │──────── hat ───────│ Steuerungsmodul  │
 └───────────┘                    └──────────────────┘
@@ -147,7 +147,7 @@ Für jede Beziehung wird angegeben, in welchem Mengenverhältnis die Entitätsme
 
 **1:n-Beziehung** – eine Entität der einen Seite kann mit *mehreren* Entitäten der anderen Seite in Beziehung stehen, umgekehrt aber nur mit einer.
 
-```console
+```bash
 ┌───────────┐  (0,n)      (1,1)  ┌──────────────────┐
 │ Techniker │──── führt durch ───│    Wartung       │
 └───────────┘                    └──────────────────┘
@@ -159,7 +159,7 @@ Die 1:n-Beziehung ist der mit Abstand häufigste Beziehungstyp in praktischen Da
 
 **m:n-Beziehung** – Entitäten auf beiden Seiten können mit beliebig vielen Entitäten der anderen Seite in Beziehung stehen.
 
-```console
+```bash
 ┌───────────┐  (0,n)      (1,n)  ┌──────────────────┐
 │  Wartung  │──── benötigt ──────│   Ersatzteil     │
 └───────────┘                    └──────────────────┘
@@ -188,7 +188,7 @@ In der Praxis (und in Prüfungen) sind folgende zwei Fehler besonders häufig:
 
 > „Techniker führen Wartungen an Maschinen durch. Bei jeder Wartung werden ein oder mehrere Ersatzteile verbaut, und dasselbe Ersatzteil kann bei verschiedenen Wartungen zum Einsatz kommen."
 
-```console
+```bash
 ┌────────────┐  (0,n)        (1,1)  ┌────────────┐  (1,1)         (0,n)  ┌────────────┐
 │ Techniker  │───── führt durch ────│  Wartung   │──── betrifft ─────────│  Maschine  │
 └────────────┘                      └─────┬──────┘                       └────────────┘
@@ -229,7 +229,7 @@ Eine Beziehung kann auch eine Entitätsmenge mit sich selbst verbinden – man s
 
 *Beispiel:* Ein Techniker kann einem anderen Techniker als Mentor zugeteilt sein.
 
-```console
+```bash
 ┌────────────┐
 │ Techniker  │◄────┐
 └─────┬──────┘     │
