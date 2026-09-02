@@ -304,11 +304,11 @@ Techniker (1,1) ──führt durch── (0,n) Wartung (0,n) ──betrifft─�
 | :---------------------- | :------------------------------------------------------------ |
 | **Lernziele**           | Können ein ERM mit korrekten Konstruktionselementen erstellen |
 |                         | Können im ERM Entitäten und Beziehungen modellieren           |
-| **Sozialform**          | Einzelarbeit                                                  |
+| **Sozialform**          | Gruppenarbeit                                                 |
 | **Auftrag**             | siehe unten                                                   |
 | **Hilfsmittel**         |                                                               |
 | **Erwartete Resultate** |                                                               |
-| **Zeitbedarf**          | 50 min                                                        |
+| **Zeitbedarf**          | 25 min                                                        |
 | **Lösungselemente**     | ERM und Relationen Modell auf Papier oder Draw.io             |
 
 Erstelle zu den nachfolgenden Aufgaben ein ERM und relationales Datenmodell.
@@ -332,7 +332,7 @@ Erstelle zu den nachfolgenden Aufgaben ein ERM und relationales Datenmodell.
 - In einem Museum A gibt es verschiedene Räume, in denen wiederum verschiedene Gegenstände ausgestellt werden.
 - Jeder Gegenstand gehört zu genau einer Kategorie (z.B. Bild, Holzgegenstand, Metallgegenstand usw.).
 - Für jeden Raum ist genau ein Mitarbeiter zuständig.
-- Auch für jede Kategorie ist genau in Mitarbeiter zuständig.
+- Auch für jede Kategorie ist genau ein Mitarbeiter zuständig.
 
 ---
 
