@@ -482,7 +482,7 @@ SQL wird zwar in der Reihenfolge `SELECT … FROM … WHERE … GROUP BY … HAV
 
 ![ORDER BY](./x_gitres/select-group-having-orderby.png)
 
-```console
+```bash
 1. FROM       (Datenquelle bestimmen)
 2. WHERE      (einzelne Zeilen filtern)
 3. GROUP BY   (gruppieren)

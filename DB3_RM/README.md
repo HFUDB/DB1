@@ -122,14 +122,14 @@ Ein **Fremdschlüssel** ist ein Attribut in einer Tabelle, das auf den Primärsc
 
 **Beispiel:**
 
-```console
+```bash
 Tabelle: Techniker                    Tabelle: Wartung
 ┌───────────────┬──────────┐          ┌──────────────┬────────────┬─────────────────┐
 │ PersonalNr(PK)│  Name    │          │ WartungsNr(PK)│  Datum    │ PersonalNr (FK) │
 ├───────────────┼──────────┤          ├──────────────┼────────────┼─────────────────┤
-│      1        │ Meier    │          │      101      │ 2026-03-01│       1         │
-│      2        │ Huber    │          │      102      │ 2026-03-02│       2         │
-└───────────────┴──────────┘          │      103      │ 2026-03-03│       1         │
+│      1        │ Meier    │          │      101     │ 2026-03-01 │       1         │
+│      2        │ Huber    │          │      102     │ 2026-03-02 │       2         │
+└───────────────┴──────────┘          │      103     │ 2026-03-03 │       1         │
                                       └──────────────┴────────────┴─────────────────┘
 ```
 
@@ -165,7 +165,7 @@ Eine m:n-Beziehung lässt sich **nicht** direkt über einen einfachen Fremdschl�
 
 **Beispiel:** `Wartung (0,n) ── benötigt ── (1,n) Ersatzteil`
 
-```console
+```bash
 Tabelle: Wartung            Tabelle: Wartung_Ersatzteil                   Tabelle: Ersatzteil
 ┌───────────────┐          ┌───────────────┬─────────────────┬───────┐   ┌─────────────────┐
 │ WartungsNr(PK)│          │ WartungsNr(FK)│ ErsatzteilNr(FK)│ Menge │   │ ErsatzteilNr(PK)│
@@ -281,13 +281,13 @@ Relationen Modell erstellen:** Überführen Sie das obige ERM in ein Relationen 
 
 Gegeben ist folgendes ERM (aus dem ERM Kapitel):
 
-```console
-Techniker (0,n) ──führt durch── (1,1) Wartung (1,1) ──betrifft── (0,n) Maschine
-                                        │(1,n)
+```bash
+Techniker (1,1) ──führt durch── (0,n) Wartung (0,n) ──betrifft── (1,1) Maschine
+                                        │(0,n)
                                         │
                                         │benötigt
                                         │
-                                        │(0,n)
+                                        │(1,n)
                                     Ersatzteil
 ```
 

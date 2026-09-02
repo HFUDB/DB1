@@ -61,7 +61,7 @@ Normalisierung ist ein systematisches Verfahren, um Tabellen so zu strukturieren
 
 Betrachten wir eine bewusst schlecht entworfene Tabelle:
 
-```console
+```bash
 Tabelle: Wartung_unnormalisiert
 ┌───────────┬────────────┬───────────────┬───────────────┬─────────────────┬────────────────┐
 │ WartungsNr│ Datum      │ Techniker     │ Telefonnummer │ Maschine        │ Standort       │
@@ -108,7 +108,7 @@ Eine **unnormalisierte Form** ist nicht a priori schlecht, sie ist einfach in re
 
 **Verletzung 1NF – Beispiel:**
 
-```console
+```bash
 ┌───────────┬────────────────────────────────┐
 │ WartungsNr│ VerwendeteErsatzteile          │
 ├───────────┼────────────────────────────────┤
@@ -132,7 +132,7 @@ Die 2NF ist nur relevant, wenn der Primärschlüssel aus **mehreren** Spalten be
 
 **Verletzung 2NF – Beispiel:**
 
-```console
+```bash
 Tabelle: Wartung_Ersatzteil (PK: WartungsNr, ErsatzteilNr)
 ┌───────────┬──────────────┬───────┬──────────────────────┐
 │ WartungsNr│ ErsatzteilNr │ Menge │ ErsatzteilBezeichnung│
@@ -146,7 +146,7 @@ Tabelle: Wartung_Ersatzteil (PK: WartungsNr, ErsatzteilNr)
 
 **Lösung:** `ErsatzteilBezeichnung` gehört in die Tabelle `Ersatzteil`, nicht in die Zwischentabelle:
 
-```console
+```bash
 Ersatzteil(ErsatzteilNr PK, Bezeichnung, Preis, Lagerbestand)
 Wartung_Ersatzteil(WartungsNr FK, ErsatzteilNr FK, Menge)
 ```
@@ -161,7 +161,7 @@ Die Spalte `Menge` hingegen ist zu Recht in der Zwischentabelle verblieben, da s
 
 **Verletzung 3NF – Beispiel:**
 
-```console
+```bash
 Tabelle: Maschine
 ┌────────────┬─────────────┬─────────────┬───────────────────┐
 │ MaschinenNr│ Bezeichnung │ HerstellerId│ HerstellerName    │
@@ -175,7 +175,7 @@ Tabelle: Maschine
 
 **Lösung:** Auslagern in eine eigene Tabelle `Hersteller`:
 
-```console
+```bash
 Hersteller(HerstellerId PK, HerstellerName, Adresse)
 Maschine(MaschinenNr PK, Bezeichnung, HerstellerId FK → Hersteller)
 ```
@@ -186,7 +186,7 @@ Maschine(MaschinenNr PK, Bezeichnung, HerstellerId FK → Hersteller)
 
 Die Abschnitte 5.2–5.4 haben die Normalisierung jeweils an einem einzelnen Tabellenausschnitt demonstriert. Führt man dieselben Schritte konsequent an der ursprünglichen, unnormalisierten Tabelle `Wartung_unnormalisiert` aus Kapitel 5.1 durch – ergänzt um die in den Beispielen von 5.2 (Ersatzteile) und 5.4 (Hersteller) eingeführten Zusatzinformationen –, ergibt sich am Schluss folgendes vollständige, durchgängig in 3NF stehende Tabellenschema:
 
-```console
+```bash
 Techniker(PersonalNr PK, Name, Telefonnummer)
 Hersteller(HerstellerId PK, HerstellerName, Adresse)
 Maschine(MaschinenNr PK, Bezeichnung, Standort, HerstellerId FK → Hersteller)
@@ -285,7 +285,7 @@ Entscheidend ist in solchen Fällen, dass die Anwendung (oder ein Datenbank-Trig
 
 Gegeben ist folgende unnormalisierte Tabelle eines Werkzeuglagers:
 
-```console
+```bash
 Tabelle: Ausleihe
 ┌───────────┬──────────────┬────────────────┬─────────────────┬──────────────┬─────────────┐
 │ AusleiheId│ MitarbeiterId│ MitarbeiterName│ WerkzeugId      │ WerkzeugName │ Ausleihdatum│

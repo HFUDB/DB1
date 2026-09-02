@@ -89,7 +89,7 @@ ORDER BY a.ausleihdatum DESC;
 
 **Visualisierung:**
 
-```console
+```bash
 kunden              ausleihe            buecher
 ┌────┐              ┌────┐              ┌────┐
 │ ●●●│  ════════►   │ ●●●│  ◄═══════    │ ●●●│
