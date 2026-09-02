@@ -24,6 +24,7 @@
 - [2. Aufgaben](#2-aufgaben)
   - [2.1. Anomalien erkennen und normalisieren](#21-anomalien-erkennen-und-normalisieren)
   - [2.2. Schulverwaltung (Normalisierung)](#22-schulverwaltung-normalisierung)
+  - [2.3. Lernangebot (Normalisierung)](#23-lernangebot-normalisierung)
 
 ---
 
@@ -339,6 +340,28 @@ Tabelle: Ausleihe
 - Kennzeichnen Sie Primary Key und Foreign Key.
 
 ![Excel-Datei](./x_gitres/Schulverwaltung-Aufgabe.xlsx)
+
+---
+
+## 2.3. Lernangebot (Normalisierung)
+
+| **Vorgabe**             | **Beschreibung**                                                          |
+| :---------------------- | :------------------------------------------------------------------------ |
+| **Lernziele**           | Kann unnormalisierte Daten in eine normalisierte Struktur transformieren. |
+| **Sozialform**          | Einzelarbeit                                                              |
+| **Auftrag**             | siehe unten                                                               |
+| **Hilfsmittel**         |                                                                           |
+| **Erwartete Resultate** |                                                                           |
+| **Zeitbedarf**          | 60 min                                                                    |
+| **Lösungselemente**     | Excel-Datei mit normalisierten Daten                                      |
+
+**Aufgabenstellung:**
+
+- Sie erhalten sie unten abgebildete Tabelle. Diese sollen nun in eine stark strukturierte Form (normalisierte Struktur) übertragen werden
+- Aktuell wird das Lernangebot einer Bildungseinrichtung in einer Excel Datei mit nachfolgender Struktur geführt.
+- Überlegen Sie, wie redundante Daten ohne Informationsverlust eliminiert werden kann.
+
+![Lernangebot](./x_gitres/lernangebot.png)
 
 ---
 
