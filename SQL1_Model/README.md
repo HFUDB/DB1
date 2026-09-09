@@ -67,6 +67,8 @@ Diese Fragen beantworten wir im folgenden Kapitel **systematisch** und an vielen
 
 ## 1.2. Schritt 1: Entitätsmengen → CREATE TABLE
 
+![Syntax](./x_gitres/create-table.png)
+
 ### 1.2.1. Das Basismuster
 
 Im **Relationenmodell** notieren Sie:
@@ -282,6 +284,8 @@ Ausleihen
 ```
 
 ### 1.5.2. Die SQL-Umsetzung
+
+![Foreign Key Constraint](./x_gitres/foreign-key-constraint-1.png)
 
 ```sql
 CREATE TABLE ausleihen (

@@ -275,6 +275,10 @@ Dieselbe Überlegung ist bereits in Kapitel 4.2 (künstlicher vs. natürlicher S
 
 #### 1.4.3.4. Foreign Key - Constraint
 
+![Variante 1](./x_gitres/foreign-key-constraint-1.png)
+
+![Variante 2](./x_gitres/foreign-key-constraint-2.png)
+
 ```sql
 CREATE TABLE ausleihen (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -301,6 +305,8 @@ Dieses Verhalten überrascht Studierende mit SQL-Server-Erfahrung meist am meist
 
 Garantiert, dass kein Wert in dieser Spalte doppelt vorkommt.
 `NULL`-Werte sind von `UNIQUE` ausgenommen – mehrere `NULL`-Werte sind erlaubt.
+
+![Beipspiel](./x_gitres/unique-constraint.jpg)
 
 ```sql
 -- Einfach-UNIQUE auf Spaltenebene

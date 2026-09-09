@@ -2,13 +2,55 @@
 | ------------------------------------------- | ------------------------ | ----------------------------- |
 | **Informatik\*in / Systemtechniker\*in HF** | **Datenbankentwicklung** | ![logo](../x_gitres/logo.png) |
 
-# Getting Started mit Letos
+- [1. Was ist SQLite](#1-was-ist-sqlite)
+- [2. Getting Started mit Letos](#2-getting-started-mit-letos)
+  - [2.1. Lernziele](#21-lernziele)
+  - [2.2. Was ist Letos?](#22-was-ist-letos)
+  - [2.3. Installation](#23-installation)
+  - [2.4. Datenbank erstellen oder öffnen](#24-datenbank-erstellen-oder-öffnen)
+  - [2.5. Die Benutzeroberfläche im Überblick](#25-die-benutzeroberfläche-im-überblick)
+  - [2.6. Eine Tabelle erstellen](#26-eine-tabelle-erstellen)
+  - [2.7. SQL-Editor: Abfragen schreiben und ausführen](#27-sql-editor-abfragen-schreiben-und-ausführen)
+    - [2.7.1. Beispiel: INSERT und SELECT im SQL-Editor](#271-beispiel-insert-und-select-im-sql-editor)
+  - [2.8. Daten ansehen und bearbeiten](#28-daten-ansehen-und-bearbeiten)
+  - [2.9. Import und Export](#29-import-und-export)
+  - [2.10. ERD-Editor (Kurzhinweis)](#210-erd-editor-kurzhinweis)
+  - [2.11. Kurzübung: Erste Schritte selbst ausprobieren](#211-kurzübung-erste-schritte-selbst-ausprobieren)
+  - [2.12. 1.12 SQLite Beispieldatenbank (chinook)](#212-112-sqlite-beispieldatenbank-chinook)
+
+---
+
+</br>
+
+# 1. Was ist SQLite
+
+**SQLite** ist eine Softwarebibliothek, die ein **relationales Datenbankmanagementsystem** bereitstellt.
+Das „lite“ in SQLite steht für die geringe Komplexität hinsichtlich Einrichtung, Datenbankverwaltung und Ressourcenbedarf.
+
+![](./x_gitres/sqlite370_banner.svg)
+
+[sqlite.org](https://www.sqlite.org/index.html)
+
+SQLite zeichnet sich durch folgende bemerkenswerte Merkmale aus:
+
+- In sich geschlossen
+- Serverlos
+- Keine Konfiguration erforderlich
+- Transaktionsfähig
+
+[SQLite Erläuterung](https://www.sqlitetutorial.net/what-is-sqlite/)
+
+---
+
+# 2. Getting Started mit Letos
+
+![Letos](./x_gitres/letos.png)
 
 *Letos ist die Datenbankanwendung, mit der wir in diesem Kurs praktisch arbeiten.*
 
 > **Hinweis:** Letos hiess bis vor Kurzem **SQLiteStudio**. Es handelt sich um dieselbe Anwendung, vom selben Entwickler, mit derselben Funktionalität – nur der Name hat sich geändert (Grund: Abgrenzung zum offiziellen SQLite-Projekt). Solltet ihr in älteren Tutorials, Foreneinträgen oder Videos den Namen „SQLiteStudio" sehen, ist damit dieselbe Software gemeint. Screenshots und Anleitungen zu SQLiteStudio lassen sich 1:1 auf Letos übertragen.
 
-## Lernziele
+## 2.1. Lernziele
 
 Nach diesem Kapitel können Sie:
 
@@ -19,7 +61,7 @@ Nach diesem Kapitel können Sie:
 - [ ] SQL-Abfragen im SQL-Editor schreiben und ausführen
 - [ ] Daten als CSV importieren und exportieren
 
-## 1. Was ist Letos?
+## 2.2. Was ist Letos?
 
 Letos ist ein kostenloses, quelloffenes Verwaltungsprogramm (GUI) für SQLite-Datenbanken. Es läuft unter Windows, macOS und Linux und bietet unter anderem:
 
@@ -30,7 +72,7 @@ Letos ist ein kostenloses, quelloffenes Verwaltungsprogramm (GUI) für SQLite-Da
 
 Letos enthält keine Werbung, keine Telemetrie und es gibt keine kostenpflichtige Version.
 
-## 2. Installation
+## 2.3. Installation
 
 1. Offizielle Download-Seite: **[https://letos.org](https://letos.org)**, alternativ direkt über die Releases auf GitHub: `https://github.com/pawelsalawa/letos/releases`
 2. Passendes Paket für das eigene Betriebssystem wählen:
@@ -39,7 +81,7 @@ Letos enthält keine Werbung, keine Telemetrie und es gibt keine kostenpflichtig
    - **Linux:** Paket über die Paketverwaltung der Distribution installieren, falls vorhanden, sonst das bereitgestellte Archiv verwenden
 3. Letos starten. Beim allerersten Start ist noch keine Datenbank verbunden – das erledigen wir im nächsten Schritt.
 
-## 3. Datenbank erstellen oder öffnen
+## 2.4. Datenbank erstellen oder öffnen
 
 Über das Menü **Database** (bzw. das entsprechende Symbol in der Toolbar) stehen zwei Optionen zur Verfügung:
 
@@ -52,7 +94,7 @@ Alle verbundenen Datenbanken erscheinen anschliessend im **Databases-Panel** auf
 
 > **Wichtig:** Eine Datenbank aus der Liste zu entfernen, löscht **nicht** die zugrundeliegende Datei – es trennt lediglich die Verbindung in Letos. Um eine Datenbankdatei tatsächlich zu löschen, muss das im Dateisystem (Explorer/Finder) gemacht werden.
 
-## 4. Die Benutzeroberfläche im Überblick
+## 2.5. Die Benutzeroberfläche im Überblick
 
 Letos gliedert sich in drei Bereiche:
 
@@ -62,7 +104,7 @@ Letos gliedert sich in drei Bereiche:
 
 Zusätzliche Werkzeuge (Import/Export, DDL-Verlauf, Funktions- und Kollationseditor) befinden sich im Menü **Tools**.
 
-## 5. Eine Tabelle erstellen
+## 2.6. Eine Tabelle erstellen
 
 Es gibt zwei gleichwertige Wege – beide führen zum selben Ergebnis:
 
@@ -75,7 +117,7 @@ Es gibt zwei gleichwertige Wege – beide führen zum selben Ergebnis:
 
 **b) Über den SQL-Editor** (siehe Schritt 6): Das `CREATE TABLE`-Statement direkt eintippen und ausführen. Für den weiteren Kursverlauf ist dieser Weg meist der schnellere, da wir DDL-Statements ohnehin schriftlich festhalten wollen.
 
-## 6. SQL-Editor: Abfragen schreiben und ausführen
+## 2.7. SQL-Editor: Abfragen schreiben und ausführen
 
 1. SQL-Editor öffnen: Toolbar-Symbol, Menü *Tools → SQL Editor*, oder Tastenkombination **Alt+E**
 2. Sicherstellen, dass oben im Editorfenster die richtige Datenbank ausgewählt ist (Letos kann mehrere Datenbanken gleichzeitig verbunden haben)
@@ -92,7 +134,7 @@ Das Ergebnis erscheint in einem Grid unterhalb (oder in einem separaten Tab, je 
 
 > Alle Tastenkombinationen lassen sich in den Einstellungen frei anpassen – die obigen sind die Standardbelegung.
 
-### Beispiel: INSERT und SELECT im SQL-Editor
+### 2.7.1. Beispiel: INSERT und SELECT im SQL-Editor
 
 Am einfachsten lässt sich der Ablauf an einem kleinen Beispiel nachvollziehen. Folgende drei Statements nacheinander in den SQL-Editor eintippen und jeweils mit **F9** ausführen:
 
@@ -120,7 +162,7 @@ Nach dem `SELECT`-Befehl erscheint im Ergebnisbereich unterhalb des Editors eine
 
 > **Tipp:** Stehen mehrere Statements – durch `;` getrennt – im selben Editorfenster, lässt sich mit dem Cursor in einer bestimmten Zeile und **Ctrl+F9** gezielt nur dieses eine Statement ausführen, ohne die anderen erneut auszuführen.
 
-## 7. Daten ansehen und bearbeiten
+## 2.8. Daten ansehen und bearbeiten
 
 Doppelklick auf eine Tabelle im Databases-Panel öffnet sie im Arbeitsbereich mit zwei Reitern:
 
@@ -129,7 +171,7 @@ Doppelklick auf eine Tabelle im Databases-Panel öffnet sie im Arbeitsbereich mi
 
 Im *Data*-Reiter lassen sich Zellen direkt per Doppelklick bearbeiten. Änderungen werden erst durch **Commit** (grüner Haken in der Toolbar) dauerhaft in die Datenbank geschrieben; **Rollback** verwirft sie wieder. Dieses Verhalten entspricht dem Transaktionsprinzip aus Kapitel 10.6 (`COMMIT`/`ROLLBACK`).
 
-## 8. Import und Export
+## 2.9. Import und Export
 
 Über das Menü **Tools**:
 
@@ -138,11 +180,11 @@ Im *Data*-Reiter lassen sich Zellen direkt per Doppelklick bearbeiten. Änderung
 
 Das ist z.B. praktisch, um Übungsresultate als CSV abzugeben oder eine Musterdatenbank für alle Studierenden als fertiges SQL-Skript bereitzustellen.
 
-## 9. ERD-Editor (Kurzhinweis)
+## 2.10. ERD-Editor (Kurzhinweis)
 
 Letos 4.0 bringt einen eingebauten **ERD-Editor**, der bestehende Fremdschlüsselbeziehungen einer Datenbank automatisch als Diagramm darstellt und auch das Neuanlegen von Tabellen per Diagramm erlaubt. Zu finden über *Tools → ERD Editor* (Bezeichnung kann je nach Version leicht abweichen). Dies ersetzt nicht die manuelle ERM-Modellierung aus Kapitel 3/4, eignet sich aber gut, um am Ende zu kontrollieren, ob das tatsächlich erstellte Schema der eigenen Planung entspricht.
 
-## Kurzübung: Erste Schritte selbst ausprobieren
+## 2.11. Kurzübung: Erste Schritte selbst ausprobieren
 
 Die Tabelle `Person` aus dem Beispiel in Abschnitt 6 ist bereits angelegt und enthält einen Datensatz. Darauf aufbauend:
 
@@ -153,3 +195,11 @@ Die Tabelle `Person` aus dem Beispiel in Abschnitt 6 ist bereits angelegt und en
 5. Die Tabelle als CSV exportieren.
 
 Wer diese fünf Schritte ohne Hilfe durchführen kann, beherrscht die Grundfunktionen von Letos und ist bereit für die weiteren Kursinhalte.
+
+## 2.12. 1.12 SQLite Beispieldatenbank (chinook)
+
+Rufen sie die Beispieldatenbank chinook.db ab und öffnen sie diese in ihrer Letos Anwendung.
+
+![Relationen Modell](./x_gitres/chinnok.png)
+
+[download chinook.db](./x_gitres/chinook.db)

@@ -23,8 +23,9 @@
     - [1.13.4. 3.NF](#1134-3nf)
 - [2. Aufgaben](#2-aufgaben)
   - [2.1. Anomalien erkennen und normalisieren](#21-anomalien-erkennen-und-normalisieren)
-  - [2.2. Schulverwaltung (Normalisierung)](#22-schulverwaltung-normalisierung)
-  - [2.3. Lernangebot (Normalisierung)](#23-lernangebot-normalisierung)
+  - [2.2. Personal (Normalisierung)](#22-personal-normalisierung)
+  - [2.3. Schulverwaltung (Normalisierung)](#23-schulverwaltung-normalisierung)
+  - [2.4. Lernangebot (Normalisierung)](#24-lernangebot-normalisierung)
 
 ---
 
@@ -107,6 +108,8 @@ Eine **unnormalisierte Form** ist nicht a priori schlecht, sie ist einfach in re
 
 **Regel:** Jedes Attribut enthält nur **atomare** (unteilbare) Werte, und es gibt keine Wiederholungsgruppen (keine mehrfach vorkommenden Spalten gleicher Bedeutung).
 
+![Beispiel](./x_gitres/1nf-valuelist.png)
+
 **Verletzung 1NF – Beispiel:**
 
 ```bash
@@ -130,6 +133,8 @@ Eine ebenso häufige, aber weniger offensichtliche Verletzung der 1NF sind **Wie
 **Regel:** Die Tabelle erfüllt die 1NF, **und** jedes Nicht-Schlüssel-Attribut ist von der **gesamten** Kombination des (zusammengesetzten) Primärschlüssels abhängig – nicht nur von einem Teil davon.
 
 Die 2NF ist nur relevant, wenn der Primärschlüssel aus **mehreren** Spalten besteht.
+
+![Beispiel](./x_gitres/2nf-functional-dependence.png)
 
 **Verletzung 2NF – Beispiel:**
 
@@ -159,6 +164,8 @@ Die Spalte `Menge` hingegen ist zu Recht in der Zwischentabelle verblieben, da s
 ## 1.9. Dritte Normalform (3NF)
 
 **Regel:** Die Tabelle erfüllt die 2NF, **und** kein Nicht-Schlüssel-Attribut hängt von einem *anderen* Nicht-Schlüssel-Attribut ab (keine sogenannte **transitive Abhängigkeit**).
+
+![Beispiel](./x_gitres/3nf-transitive-dependence.png)
 
 **Verletzung 3NF – Beispiel:**
 
@@ -305,7 +312,43 @@ Tabelle: Ausleihe
 
 ---
 
-## 2.2. Schulverwaltung (Normalisierung)
+## 2.2. Personal (Normalisierung)
+
+| **Vorgabe**             | **Beschreibung**                                                                          |
+| :---------------------- | :---------------------------------------------------------------------------------------- |
+| **Lernziele**           | Die Teilnehmer können unnormalisierte Daten in eine normalisierte Struktur transformieren |
+| **Sozialform**          | Einzelarbeit                                                                              |
+| **Auftrag**             | siehe unten                                                                               |
+| **Hilfsmittel**         |                                                                                           |
+| **Erwartete Resultate** |                                                                                           |
+| **Zeitbedarf**          | 20 min                                                                                    |
+| **Lösungselemente**     | Excel                                                                                     |
+
+**Ausgangssituation:**
+
+- In Datenbanken gilt das **«on fact one place»** Prinzip.
+- Folglich müssen sämtliche redundante Information beseitigt werden sodass sämtliche Widersprüche und Anomalien beseitigt sind.
+
+**Auftrag:**
+
+- Sie erhalten sie unten abgebildete Tabelle.
+- Diese sollen nun in eine stark strukturierte Form (normalisierte Struktur, 3.NF) übertragen werden
+
+| **P-Nr** | **Name**      | **A-Nr** | **Abteilungsname** | **Proj-Nr** | **Projekt**     | **Stunden** |
+| -------- | ------------- | -------- | ------------------ | ----------- | --------------- | ----------- |
+| 1001     | Dieter Muster | 1        | Marketing          | 121,132     | WM 2002, Tennis | 5, 12       |
+| 1002     | Petra Kiener  | 2        | Design             | 132         | Tennis          | 50          |
+| 1003     | Ursula Meier  | 1        | Marketing          | 121, 34     | WM 2002, Osaka  | 16, 21      |
+
+- Modellieren Sie diesen Sachverhalt mit einem geeigneten Relationen Modell (mit Attributen, Beziehungen und Kardinalitäten dar).
+- Erfassen Sie die normalisierten Daten in Excel.
+- Kennzeichnen Sie Primary Key und Foreign Key.
+
+[Excel-Datei](./x_gitres/personal-aufgabe.xlsx)
+
+---
+
+## 2.3. Schulverwaltung (Normalisierung)
 
 | **Vorgabe**             | **Beschreibung**                                                                          |
 | :---------------------- | :---------------------------------------------------------------------------------------- |
@@ -339,11 +382,11 @@ Tabelle: Ausleihe
 - Erfassen Sie die normalisierten Daten in Excel.
 - Kennzeichnen Sie Primary Key und Foreign Key.
 
-![Excel-Datei](./x_gitres/Schulverwaltung-Aufgabe.xlsx)
+[Excel-Datei](./x_gitres/Schulverwaltung-Aufgabe.xlsx)
 
 ---
 
-## 2.3. Lernangebot (Normalisierung)
+## 2.4. Lernangebot (Normalisierung)
 
 | **Vorgabe**             | **Beschreibung**                                                          |
 | :---------------------- | :------------------------------------------------------------------------ |
