@@ -89,14 +89,7 @@ ORDER BY a.ausleihdatum DESC;
 
 **Visualisierung:**
 
-```bash
-kunden              ausleihe            buecher
-┌────┐              ┌────┐              ┌────┐
-│ ●●●│  ════════►   │ ●●●│  ◄═══════    │ ●●●│
-└────┘   (nur wo    └────┘  (nur wo     └────┘
-         kunden_id           buch_id
-         übereinstimmt)      übereinstimmt)
-```
+![Modell](./x_gitres/kunden_ausleihe_buecher.png)
 
 Kunden ohne jegliche Ausleihe erscheinen bei einem `INNER JOIN` **nicht** im Ergebnis – das ist bei einer Auswertung wie „wer hat was ausgeliehen" oft gewünscht, kann aber je nach Fragestellung problematisch sein (siehe `LEFT JOIN`).
 
@@ -371,6 +364,11 @@ WHERE EXISTS (
 | **Zeitbedarf**          | 60 min                                                                      |
 | **Lösungselemente**     | SQL Abfragebefehle                                                          |
 
+**Voraussetzung:**
+
+Rufe die ![Bibliothek](./x_gitres/bibliothek.db) Datenbank ab und öffne sie mit Letos.
+Alternativ kann auch die Datenbank mit ![SQL-Skriptdatei](./x_gitres/bibliothek_daten.sql) erstellt werden.
+
 **Schreibe eine Abfrage, die folgendes ausgibt:**
 
 1. Listet alle Bücher mit dem vollständigen Autorennamen und dem Land des Autors
@@ -436,6 +434,9 @@ Setzt das gesamte Wissen ein. Erstellt einen vollständigen Bibliotheksbericht.
 | **Erwartete Resultate** |                                                     |
 | **Zeitbedarf**          | 40 min                                              |
 | **Lösungselemente**     | SQL Abfragebefehle                                  |
+
+**Voraussetzung:**
+Rufe die ![Schulverwaltungsdatenbank](./x_gitres/schulverwaltung.db) Datenbank ab und öffne sie mit Letos.
 
 **Teil 1: Abfragen mit mehreren Tabellen (Join):**
 

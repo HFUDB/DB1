@@ -660,7 +660,7 @@ CREATE TABLE Ort (
 
 **Ausgangssituation:**
 
-- Sie verwenden das Datenbank Modell aus [SQL1_Model, Aufgabe 2.1.A](../SQL1_Model/README.md#a-schulverwaltung).
+- Sie verwenden das Datenbank Modell aus [SQL1_Model, Aufgabe 2.1.A](../DB4_Norm/README.md#23-schulverwaltung-normalisierung).
 - Implementieren Sie dieses Modell in SQLite und fügen Sie Testdaten ein.
 
 **Aufgabe:**

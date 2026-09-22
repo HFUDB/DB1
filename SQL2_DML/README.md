@@ -24,7 +24,6 @@
 - [2. Übungsaufgaben](#2-übungsaufgaben)
   - [2.1. Mutationen Kundendaten](#21-mutationen-kundendaten)
   - [2.2. Mutationen Blumendaten](#22-mutationen-blumendaten)
-  - [2.3. Mutationen Schulverwaltung](#23-mutationen-schulverwaltung)
 
 ---
 
@@ -497,34 +496,6 @@ CREATE TABLE IF NOT EXISTS Blume
 **A9:** Stelle sicher, dass der Blumenpreis immer > 0 sein muss.
 
 **A10:** Entferne die gesamte Tabelle `BLUME`, inklusive Metadaten.
-
----
-
-## 2.3. Mutationen Schulverwaltung
-
-| **Vorgabe**             | **Beschreibung**                                         |
-| :---------------------- | :------------------------------------------------------- |
-| **Lernziele**           | Kann SQL DDL und DML-Befehle ausführen                   |
-|                         | Kann Daten in eine Tabelle einfügen, ändern und löschen. |
-|                         | Kann Daten in einer Tabelle abfragen                     |
-| **Sozialform**          | Einzelarbeit                                             |
-| **Auftrag**             | siehe unten                                              |
-| **Hilfsmittel**         |                                                          |
-| **Erwartete Resultate** |                                                          |
-| **Zeitbedarf**          | 30 min                                                   |
-| **Lösungselemente**     | Fehlerfreie SQL-Skriptdateien                            |
-|                         | `insert_data.sql`                                        |
-
-**Ausgangssituation:**
-
-- Sie verwenden das Datenbank Modell vorangegangener Aufgabe.
-
-Fügen Sie per SQL Befehl (insert into …) alle Datenzeilen aus der Tabelle unten in Ihre Datenbank ein.
-
-```sql
-INSERT INTO [user.]tabelle [ (column [,column] ...) ]
-VALUES (value [,value] ...)
-```
 
 ---
 
