@@ -618,6 +618,9 @@ Dieses Auseinanderfallen von Schreib- und Ausführungsreihenfolge ist für viele
 | **Zeitbedarf**          | 50 min                                              |
 | **Lösungselemente**     | SQL Abfragebefehle                                  |
 
+**Voraussetzung:**
+Rufe die ![Schulverwaltungsdatenbank](./x_gitres/schulverwaltung.db) Datenbank ab und öffne sie mit Letos.
+
 **Teil 1: Einfache Abfragen:**
 
 **A1.1:**
