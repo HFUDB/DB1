@@ -18,9 +18,13 @@
     - [1.6.2. Beispiele](#162-beispiele)
     - [1.6.3. DELETE vs. DROP TABLE – der Unterschied](#163-delete-vs-drop-table--der-unterschied)
     - [1.6.4. Fremdschlüssel-Abhängigkeiten beachten](#164-fremdschlüssel-abhängigkeiten-beachten)
-  - [1.7. Transaktionen – Sicherheitsnetz bei DML](#17-transaktionen--sicherheitsnetz-bei-dml)
-    - [1.7.1. Syntax](#171-syntax)
-    - [1.7.2. Praxisbeispiel: Ausleihe verbuchen](#172-praxisbeispiel-ausleihe-verbuchen)
+  - [1.7. last\_insert\_rowid() — die zuletzt vergebene ID abrufen](#17-last_insert_rowid--die-zuletzt-vergebene-id-abrufen)
+  - [1.8. AUTOINCREMENT-Zähler zurücksetzen](#18-autoincrement-zähler-zurücksetzen)
+    - [1.8.1. Zähler zurücksetzen](#181-zähler-zurücksetzen)
+    - [1.8.2. Aktuellen Zählerstand auslesen](#182-aktuellen-zählerstand-auslesen)
+  - [1.9. Transaktionen – Sicherheitsnetz bei DML](#19-transaktionen--sicherheitsnetz-bei-dml)
+    - [1.9.1. Syntax](#191-syntax)
+    - [1.9.2. Praxisbeispiel: Ausleihe verbuchen](#192-praxisbeispiel-ausleihe-verbuchen)
 - [2. Übungsaufgaben](#2-übungsaufgaben)
   - [2.1. Mutationen Kundendaten](#21-mutationen-kundendaten)
   - [2.2. Mutationen Blumendaten](#22-mutationen-blumendaten)
@@ -52,7 +56,7 @@
 | Data Definition Language       | DDL           | `CREATE`, `ALTER`, `DROP`        | Struktur definieren    |
 | Data Control Language          | DCL           | `GRANT`, `REVOKE`                | Berechtigungen steuern |
 
-> **Hinweis:** SQLite kennt kein Berechtigungssystem – `GRANT`/`REVOKE` gibt es dort **nicht** (Details siehe Kapitel „Schema implementieren"). `COMMIT`/`ROLLBACK` (Abschnitt 1.7) funktionieren in SQLite hingegen normal.
+> **Hinweis:** SQLite kennt kein Berechtigungssystem – `GRANT`/`REVOKE` gibt es dort **nicht** (Details siehe Kapitel „Schema implementieren"). `COMMIT`/`ROLLBACK` funktionieren in SQLite hingegen normal.
 
 In diesem Theorieblock fokussieren wir uns auf die drei zentralen DML-Befehle: `INSERT INTO`, `UPDATE` und `DELETE`.
 
@@ -321,11 +325,67 @@ DELETE FROM kunden WHERE id = 1;  -- FOREIGN KEY constraint failed!
 
 ---
 
-## 1.7. Transaktionen – Sicherheitsnetz bei DML
+## 1.7. last_insert_rowid() — die zuletzt vergebene ID abrufen
+
+Bei einer Tabelle mit **INTEGER PRIMARY KEY AUTOINCREMENT** vergibt SQLite die ID automatisch — man kennt sie also im Moment des INSERT noch nicht. Genau dafür gibt es `last_insert_rowid()`: Die Funktion liefert die automatisch vergebene ID des **zuletzt** erfolgreich eingefügten Datensatzes in der aktuellen Verbindung zurück.
+
+```sql
+Das ist besonders nützlich, wenn unmittelbar nach dem Anlegen eines Datensatzes ein zweiter, davon abhängiger Datensatz eingefügt werden muss — z.B. ein neuer Teilnehmer, der gleich für einen Kurs angemeldet wird:
+
+-- Schritt 1: Neuen Teilnehmer anlegen (TeilnehmerNr wird automatisch vergeben)
+INSERT INTO Teilnehmer (Nachname, Vorname, Geburtsdatum)
+VALUES ('Bühler', 'Sara', '2010-05-22');
+
+-- Schritt 2: last_insert_rowid() liefert genau diese TeilnehmerNr zurück
+INSERT INTO Anmeldung (KursNr, TeilnehmerNr, Anmeldedatum, Kurspreis)
+VALUES (4, last_insert_rowid(), date('now'), 90.00);
+```
+
+> Ohne last_insert_rowid() müsste man die neue ID zuerst mit einer separaten SELECT-Abfrage ermitteln (z.B. über MAX(TeilnehmerNr)) — das ist nicht nur umständlicher, sondern bei gleichzeitigem Zugriff mehrerer Verbindungen auch fehleranfällig, da zwischen SELECT MAX(...) und dem zweiten INSERT bereits ein anderer Datensatz dazwischenkommen könnte.
+
+## 1.8. AUTOINCREMENT-Zähler zurücksetzen
+
+Bei `AUTOINCREMENT` merkt sich SQLite den höchsten je vergebenen Wert getrennt von den eigentlichen Daten — in einer internen Systemtabelle namens `sqlite_sequence`. Das ist Absicht: Selbst wenn alle Zeilen gelöscht werden, soll eine bereits vergebene ID niemals wiederverwendet werden. Ein einfaches `DELETE FROM Test;` löscht zwar alle Datensätze, der Zähler in `sqlite_sequence` bleibt aber unverändert bestehen — der nächste `INSERT` macht dort weiter, wo der Zähler stehen geblieben ist:
+
+```sql
+DELETE FROM Test;
+INSERT INTO Test (name) VALUES ('d');
+-- id wird trotzdem 4, nicht 1!
+```
+
+### 1.8.1. Zähler zurücksetzen
+
+Der Zähler-Eintrag in sqlite_sequence muss zusätzlich gelöscht (oder auf 0 gesetzt) werden:
+
+```sql
+DELETE FROM Test;
+DELETE FROM sqlite_sequence WHERE name = 'Test';
+
+INSERT INTO Test (name) VALUES ('e');
+-- id ist jetzt wieder 1
+```
+
+Alternativ funktioniert auch:
+
+```sql
+UPDATE sqlite_sequence SET seq = 0 WHERE name = 'Test';
+```
+
+> Ein zurückgesetzter Zähler ist in der Praxis mit Vorsicht zu geniessen: Existieren noch Backups, Exporte, Log-Dateien oder externe Systeme, die auf die alten IDs verweisen, führt die Wiederverwendung derselben ID für einen neuen, anderen Datensatz schnell zu Verwechslungen. Sinnvoll ist ein Reset daher hauptsächlich in Entwicklungs-/Testumgebungen (z.B. nach dem Zurücksetzen einer Demo-Datenbank) — in produktiven Systemen lässt man den Zähler in der Regel einfach weiterlaufen.
+
+### 1.8.2. Aktuellen Zählerstand auslesen
+
+Die Tabelle `sqlite_sequence` existiert automatisch, sobald mindestens eine Tabelle der Datenbank `AUTOINCREMENT` verwendet — sie muss nicht manuell angelegt werden.
+
+```sql
+SELECT * FROM sqlite_sequence;
+```
+
+## 1.9. Transaktionen – Sicherheitsnetz bei DML
 
 **Transaktionen** fassen mehrere DML-Befehle zu einer **atomaren Einheit** zusammen: Entweder werden alle ausgeführt, oder keiner. Das ist das zentrale Sicherheitsnetz bei Datenmanipulationen.
 
-### 1.7.1. Syntax
+### 1.9.1. Syntax
 
 ```sql
 BEGIN TRANSACTION;  -- Transaktion starten
@@ -339,7 +399,7 @@ COMMIT;    -- Alle Änderungen dauerhaft speichern
 ROLLBACK;  -- Alle Änderungen rückgängig machen
 ```
 
-### 1.7.2. Praxisbeispiel: Ausleihe verbuchen
+### 1.9.2. Praxisbeispiel: Ausleihe verbuchen
 
 Ein typischer Anwendungsfall: Ein Buch wird ausgeliehen – dabei müssen **zwei** Änderungen atomar zusammenpassen: der Lagerbestand sinkt, und die Ausleihe wird protokolliert. Würde nur einer der beiden Schritte ausgeführt (z.B. weil die Applikation dazwischen abstürzt), wäre die Datenbank inkonsistent.
 

@@ -33,6 +33,8 @@ Nach diesem Kapitel können Sie:
 
 Ein **View** (deutsch: Sicht) ist eine **gespeicherte Abfrage**, die wie eine Tabelle angesprochen werden kann – er enthält jedoch selbst **keine eigenen Daten**. Bei jedem Zugriff auf einen View wird die zugrundeliegende Abfrage neu ausgeführt.
 
+![overview](./x_gitres/view-overview.png)
+
 **Vorteile von Views:**
 
 - **Komplexität kapseln:** Ein komplizierter Join muss nur einmal geschrieben werden und lässt sich danach einfach wiederverwenden

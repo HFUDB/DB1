@@ -61,11 +61,11 @@ Nach dieser Lektion könnt ihr:
 
 **SQL (Structured Query Language)** ist die Standardsprache zur Definition, Manipulation und Abfrage relationaler Datenbanken. Sie gliedert sich – wie in Kapitel 1 eingeführt – in drei Teilsprachen:
 
-| **Teilsprache** | **Zweck**                     | **Wichtigste Befehle**                 | **Kapitel**        |
-| --------------- | ----------------------------- | -------------------------------------- | ------------------ |
-| DDL             | Struktur definieren           | `CREATE`, `ALTER`, `DROP`              | **dieses Kapitel** |
-| DML             | Daten manipulieren/abfragen   | `SELECT`, `INSERT`, `UPDATE`, `DELETE` | Kapitel 7–9        |
-| DCL             | Zugriff/Transaktionen steuern | `GRANT`, `COMMIT`, `ROLLBACK`          | punktuell          |
+| **Teilsprache** | **Zweck**                     | **Wichtigste Befehle**                 |
+| --------------- | ----------------------------- | -------------------------------------- |
+| DDL             | Struktur definieren           | `CREATE`, `ALTER`, `DROP`              |
+| DML             | Daten manipulieren/abfragen   | `SELECT`, `INSERT`, `UPDATE`, `DELETE` |
+| DCL             | Zugriff/Transaktionen steuern | `GRANT`, `COMMIT`, `ROLLBACK`          |
 
 > **Hinweis:** SQLite kennt kein Berechtigungssystem – `GRANT`/`REVOKE` existieren in SQLite **nicht** und lösen einen Syntaxfehler aus. Die DCL-Zeile ist hier rein konzeptionell gemeint (in Client-Server-DBMS wie SQL Server oder PostgreSQL steuern diese Befehle Benutzerrechte). `COMMIT`/`ROLLBACK` (Transaktionssteuerung) funktionieren in SQLite hingegen normal und werden im DML-Kapitel vertieft.
 
@@ -306,7 +306,7 @@ Dieses Verhalten überrascht Studierende mit SQL-Server-Erfahrung meist am meist
 Garantiert, dass kein Wert in dieser Spalte doppelt vorkommt.
 `NULL`-Werte sind von `UNIQUE` ausgenommen – mehrere `NULL`-Werte sind erlaubt.
 
-![Beipspiel](./x_gitres/unique-constraint.jpg)
+![Beipspiel](./x_gitres/unique-constraint.png)
 
 ```sql
 -- Einfach-UNIQUE auf Spaltenebene

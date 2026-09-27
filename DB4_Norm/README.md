@@ -49,7 +49,7 @@ Normalisierung ist ein systematisches Verfahren, um Tabellen so zu strukturieren
 - **Redundanzfreiheit, "One Fact one Place» Prinzip"**
 - **keine Inkonsistenzen bei Einfüge-, Veränderungs- und Löschoperationen**
 
-![Normalisierungsstufen im Überblick](./x_gitres/schema-design.webp)
+![Normalisierungsstufen im Überblick](./x_gitres/schema-design.png)
 
 ---
 

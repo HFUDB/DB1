@@ -26,6 +26,8 @@
 
 ### [Tag 8](./GE1_Agenda/08.md)
 
+### [Tag 9](./GE1_Agenda/09.md)
+
 ---
 
 ## Inhalte
@@ -79,6 +81,24 @@
 ## Lehrgang
 
 [Ausschreibung](https://www.hbu.ch/de/-internes-/Kursdetail-Emfpangsbestaetigung/Datenbankentwicklung_Automation.kHF-DBA.10098.html#Selbstlernzeit)
+
+---
+
+## E-Learning
+
+[Sololean](https://www.sololearn.com/de/)
+
+Viele interaktive und praxisnahe Kurse.
+Die App ist auch als Mobile-Version erhältlich.
+
+- [SQL](https://www.sololearn.com/de/learn/courses/le-sql?location=2)
+
+> **Es ist eine Registrierung erforderlich**
+
+[w3schools](https://www.w3schools.com/)
+
+- [Tutorial](https://www.w3schools.com/sql/default.asp)
+- [Quiz](https://www.w3schools.com/sql/sql_quiz.asp)
 
 ---
 

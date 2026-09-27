@@ -32,7 +32,8 @@
 - [2. Aufgaben](#2-aufgaben)
   - [2.1. Datenbank Bibliothek erstellen](#21-datenbank-bibliothek-erstellen)
   - [2.2. Abfragen Bibliothek Datenbank](#22-abfragen-bibliothek-datenbank)
-  - [2.3. Abfragen Schulverwaltungsdatenbank](#23-abfragen-schulverwaltungsdatenbank)
+  - [2.3. Sololearn Basic Concepts](#23-sololearn-basic-concepts)
+  - [2.4. Abfragen Schulverwaltungsdatenbank](#24-abfragen-schulverwaltungsdatenbank)
 
 ---
 
@@ -606,7 +607,26 @@ Dieses Auseinanderfallen von Schreib- und Ausführungsreihenfolge ist für viele
 
 ---
 
-## 2.3. Abfragen Schulverwaltungsdatenbank
+## 2.3. Sololearn Basic Concepts
+
+| **Vorgabe**         | **Beschreibung**                                            |
+| :------------------ | :---------------------------------------------------------- |
+| **Lernziele**       | Einfache Abfrage und Suchmöglichkeiten mit SQL sind bekannt |
+|                     | Kann die SQL Syntax interpretieren                          |
+|                     | Kanne ein einfacher SELECT Befehl formulieren               |
+| **Sozialform**      | Einzelarbeit                                                |
+| **Auftrag**         | siehe unten                                                 |
+| **Hilfsmittel**     |                                                             |
+| **Zeitbedarf**      | 15min                                                       |
+| **Lösungselemente** | Sololearn Kapitel erfolgreich abgeschlossen                 |
+
+a)
+Starte auf Sololearn den Kurs [**SQL**](https://www.sololearn.com/de/learn/courses/le-sql?location=2) und arbeite die Lektion **Basic Concepts** durch.
+
+b)
+Starte auf Sololearn den Kurs [**SQL**](https://www.sololearn.com/de/learn/courses/le-sql?location=2) und arbeite die Lektion **Filtering, Functions, Subqueries** durch.
+
+## 2.4. Abfragen Schulverwaltungsdatenbank
 
 | **Vorgabe**             | **Beschreibung**                                    |
 | :---------------------- | :-------------------------------------------------- |

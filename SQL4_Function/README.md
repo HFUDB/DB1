@@ -4,7 +4,8 @@
 
 - [1. Funktionen](#1-funktionen)
   - [1.1. Lernziele](#11-lernziele)
-  - [1.2. Zeichenketten-Funktionen (String-Funktionen)](#12-zeichenketten-funktionen-string-funktionen)
+  - [1.2. Sinn und Zweck von Funktionen in Datenbanken](#12-sinn-und-zweck-von-funktionen-in-datenbanken)
+    - [1.2.1. Zeichenketten-Funktionen](#121-zeichenketten-funktionen)
   - [1.3. Datums- und Zeitfunktionen](#13-datums--und-zeitfunktionen)
     - [1.3.1. Format-Codes für strftime](#131-format-codes-für-strftime)
     - [1.3.2. Modifikatoren bei date()/datetime()](#132-modifikatoren-bei-datedatetime)
@@ -31,7 +32,13 @@ Nach diesem Kapitel können Sie:
 
 ---
 
-## 1.2. Zeichenketten-Funktionen (String-Funktionen)
+## 1.2. Sinn und Zweck von Funktionen in Datenbanken
+
+**Funktionen** ermöglichen es, Daten direkt in einer SQL-Abfrage zu verarbeiten, zu verändern und auszuwerten. Sie helfen beispielsweise dabei **Zeichenketten zu formatieren**, **Datumswerte zu bearbeiten**, **Berechnungen durchzuführen oder fehlende Werte zu behandeln**. Dadurch können Daten gezielt aufbereitet und Informationen effizient aus der Datenbank gewonnen werden, ohne die gespeicherten Daten selbst verändern zu müssen.
+
+![overview](./x_gitres/functions_overview.png)
+
+### 1.2.1. Zeichenketten-Funktionen
 
 | **Funktion**            | **Bedeutung**                 | **Beispiel**                            | **Ergebnis**     |
 | ----------------------- | ----------------------------- | --------------------------------------- | ---------------- |

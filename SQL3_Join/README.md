@@ -20,9 +20,10 @@
     - [1.10.3. EXISTS – Existenzprüfung](#1103-exists--existenzprüfung)
   - [1.11. Weiterführende Ressourcen](#111-weiterführende-ressourcen)
 - [2. Aufgaben](#2-aufgaben)
-  - [2.1. Abfragen Bibliothek Datenbank (JOIN)](#21-abfragen-bibliothek-datenbank-join)
-  - [2.2. Praxisprojekt: Bibliotheksauswertung](#22-praxisprojekt-bibliotheksauswertung)
-  - [2.3. Abfragen Schulverwaltungsdatenbank](#23-abfragen-schulverwaltungsdatenbank)
+  - [2.1. Sololearn JOIN, Table Operations](#21-sololearn-join-table-operations)
+  - [2.2. Abfragen Bibliothek Datenbank (JOIN)](#22-abfragen-bibliothek-datenbank-join)
+  - [2.3. Praxisprojekt: Bibliotheksauswertung](#23-praxisprojekt-bibliotheksauswertung)
+  - [2.4. Abfragen Schulverwaltungsdatenbank](#24-abfragen-schulverwaltungsdatenbank)
 
 ---
 
@@ -348,7 +349,26 @@ WHERE EXISTS (
 
 # 2. Aufgaben
 
-## 2.1. Abfragen Bibliothek Datenbank (JOIN)
+## 2.1. Sololearn JOIN, Table Operations
+
+| **Vorgabe**         | **Beschreibung**                                            |
+| :------------------ | :---------------------------------------------------------- |
+| **Lernziele**       | Einfache Abfrage und Suchmöglichkeiten mit SQL sind bekannt |
+|                     | Kann die SQL Syntax interpretieren                          |
+|                     | Kanne ein einfacher SELECT Befehl formulieren               |
+| **Sozialform**      | Einzelarbeit                                                |
+| **Auftrag**         | siehe unten                                                 |
+| **Hilfsmittel**     |                                                             |
+| **Zeitbedarf**      | 15min                                                       |
+| **Lösungselemente** | Sololearn Kapitel erfolgreich abgeschlossen                 |
+
+a)
+Starte auf Sololearn den Kurs [**SQL**](https://www.sololearn.com/de/learn/courses/le-sql?location=2) und arbeite die Lektion **JOIN, Table Operations** durch.
+
+b)
+Starte auf Sololearn den Kurs [**SQL**](https://www.sololearn.com/de/learn/courses/le-sql?location=2) und arbeite die Lektion **Challenges** durch.
+
+## 2.2. Abfragen Bibliothek Datenbank (JOIN)
 
 | **Vorgabe**             | **Beschreibung**                                                            |
 | :---------------------- | :-------------------------------------------------------------------------- |
@@ -384,7 +404,7 @@ Alternativ kann auch die Datenbank mit ![SQL-Skriptdatei](./x_gitres/bibliothek_
 
 ---
 
-## 2.2. Praxisprojekt: Bibliotheksauswertung
+## 2.3. Praxisprojekt: Bibliotheksauswertung
 
 | **Vorgabe**             | **Beschreibung**                                    |
 | :---------------------- | :-------------------------------------------------- |
@@ -423,7 +443,7 @@ Setzt das gesamte Wissen ein. Erstellt einen vollständigen Bibliotheksbericht.
 
 ---
 
-## 2.3. Abfragen Schulverwaltungsdatenbank
+## 2.4. Abfragen Schulverwaltungsdatenbank
 
 | **Vorgabe**             | **Beschreibung**                                    |
 | :---------------------- | :-------------------------------------------------- |
