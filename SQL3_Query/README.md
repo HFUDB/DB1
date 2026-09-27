@@ -626,6 +626,8 @@ Starte auf Sololearn den Kurs [**SQL**](https://www.sololearn.com/de/learn/cours
 b)
 Starte auf Sololearn den Kurs [**SQL**](https://www.sololearn.com/de/learn/courses/le-sql?location=2) und arbeite die Lektion **Filtering, Functions, Subqueries** durch.
 
+---
+
 ## 2.4. Abfragen Schulverwaltungsdatenbank
 
 | **Vorgabe**             | **Beschreibung**                                    |

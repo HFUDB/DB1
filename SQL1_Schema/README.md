@@ -4,37 +4,45 @@
 
 - [1. Schema implementieren (Data Definition Language DDL)](#1-schema-implementieren-data-definition-language-ddl)
   - [1.1. Lernziele](#11-lernziele)
-  - [1.2. Was ist SQL?](#12-was-ist-sql)
-  - [1.3. Datentypen in SQLite: Type Affinity](#13-datentypen-in-sqlite-type-affinity)
-    - [1.3.1. Wie Type Affinity konkret funktioniert](#131-wie-type-affinity-konkret-funktioniert)
-    - [1.3.2. Warum wurde dieses Konzept gewählt?](#132-warum-wurde-dieses-konzept-gewählt)
-    - [1.3.3. Empfohlene Datentypen für SQLite](#133-empfohlene-datentypen-für-sqlite)
-    - [1.3.4. Datumstypen – die wichtigste SQLite-Besonderheit](#134-datumstypen--die-wichtigste-sqlite-besonderheit)
-  - [1.4. CREATE TABLE – Tabellen erstellen](#14-create-table--tabellen-erstellen)
-    - [1.4.1. Grundsyntax](#141-grundsyntax)
-    - [1.4.2. IF NOT EXISTS – Sicheres Erstellen](#142-if-not-exists--sicheres-erstellen)
-    - [1.4.3. Constraints im Überblick](#143-constraints-im-überblick)
-      - [1.4.3.1. NOT NULL - Constraint](#1431-not-null---constraint)
-      - [1.4.3.2. PRIMARY KEY - Constraint](#1432-primary-key---constraint)
-      - [1.4.3.3. Zusammengesetzter Primärschlüssel (Zwischentabelle)](#1433-zusammengesetzter-primärschlüssel-zwischentabelle)
-      - [1.4.3.4. Foreign Key - Constraint](#1434-foreign-key---constraint)
-      - [1.4.3.5. UNIQUE - Constraint](#1435-unique---constraint)
-      - [1.4.3.6. CHECK](#1436-check)
-      - [1.4.3.7. DEFAULT - Constraint](#1437-default---constraint)
-    - [1.4.4. Constraints auf Tabellenebene – Übersicht](#144-constraints-auf-tabellenebene--übersicht)
-    - [1.4.5. ON DELETE und ON UPDATE – Referentielle Aktionen](#145-on-delete-und-on-update--referentielle-aktionen)
-  - [1.5. DROP TABLE – Tabellen löschen](#15-drop-table--tabellen-löschen)
-  - [1.6. ALTER TABLE – Tabellen anpassen](#16-alter-table--tabellen-anpassen)
-    - [1.6.1. Was geht in SQLite](#161-was-geht-in-sqlite)
-    - [1.6.2. Was geht NICHT – und der Workaround](#162-was-geht-nicht--und-der-workaround)
-  - [1.7. Weitere nützliche Schema-Befehle](#17-weitere-nützliche-schema-befehle)
-    - [1.7.1. Schema inspizieren](#171-schema-inspizieren)
-    - [1.7.2. Indizes](#172-indizes)
-    - [1.7.3. Views – Virtuelle Tabellen](#173-views--virtuelle-tabellen)
-- [2. Übungsaufgaben](#2-übungsaufgaben)
-  - [2.1. Produktherstellung (Implementierung)](#21-produktherstellung-implementierung)
-  - [2.2. Schulverwaltung (Implementierung)](#22-schulverwaltung-implementierung)
-  - [2.3. Lernangebot (Normalisierung u. Implementierung)](#23-lernangebot-normalisierung-u-implementierung)
+- [2. Vom Relationenmodell zur SQL-Implementierung](#2-vom-relationenmodell-zur-sql-implementierung)
+  - [2.1. Überblick: Der Transformationsprozess](#21-überblick-der-transformationsprozess)
+    - [2.1.1. Typische Fragen bei diesem Übergang](#211-typische-fragen-bei-diesem-übergang)
+  - [2.2. Was ist SQL?](#22-was-ist-sql)
+  - [2.3. Datentypen in SQLite: Type Affinity](#23-datentypen-in-sqlite-type-affinity)
+    - [2.3.1. Wie Type Affinity konkret funktioniert](#231-wie-type-affinity-konkret-funktioniert)
+    - [2.3.2. Warum wurde dieses Konzept gewählt?](#232-warum-wurde-dieses-konzept-gewählt)
+    - [2.3.3. Empfohlene Datentypen für SQLite](#233-empfohlene-datentypen-für-sqlite)
+    - [2.3.4. Datumstypen – die wichtigste SQLite-Besonderheit](#234-datumstypen--die-wichtigste-sqlite-besonderheit)
+    - [2.3.5. Die Type Affinity Entscheidung](#235-die-type-affinity-entscheidung)
+    - [2.3.6. Entscheidungshilfe: Die Beispiel-Datenbank](#236-entscheidungshilfe-die-beispiel-datenbank)
+    - [2.3.7. Type Affinity Faustregel](#237-type-affinity-faustregel)
+  - [2.4. CREATE TABLE – Tabellen erstellen](#24-create-table--tabellen-erstellen)
+    - [2.4.1. Grundsyntax](#241-grundsyntax)
+    - [2.4.2. IF NOT EXISTS – Sicheres Erstellen](#242-if-not-exists--sicheres-erstellen)
+  - [2.5. Constraints im Überblick](#25-constraints-im-überblick)
+    - [2.5.1. NOT NULL - Constraint](#251-not-null---constraint)
+    - [2.5.2. PRIMARY KEY - Constraint](#252-primary-key---constraint)
+    - [2.5.3. Zusammengesetzter Primärschlüssel (Zwischentabelle)](#253-zusammengesetzter-primärschlüssel-zwischentabelle)
+    - [2.5.4. Foreign Key - Constraint](#254-foreign-key---constraint)
+      - [2.5.4.1. ON DELETE und ON UPDATE – Referentielle Aktionen](#2541-on-delete-und-on-update--referentielle-aktionen)
+    - [2.5.5. UNIQUE - Constraint (Eindeutigkeit ohne PK)](#255-unique---constraint-eindeutigkeit-ohne-pk)
+    - [2.5.6. CHECK](#256-check)
+    - [2.5.7. DEFAULT - Constraint](#257-default---constraint)
+    - [2.5.8. Constraints auf Tabellenebene – Übersicht](#258-constraints-auf-tabellenebene--übersicht)
+  - [2.6. Mapping-Übersicht: RM-Konzept → SQL-Konstrukt](#26-mapping-übersicht-rm-konzept--sql-konstrukt)
+  - [2.7. DROP TABLE – Tabellen löschen](#27-drop-table--tabellen-löschen)
+  - [2.8. ALTER TABLE – Tabellen anpassen](#28-alter-table--tabellen-anpassen)
+    - [2.8.1. Was geht in SQLite](#281-was-geht-in-sqlite)
+    - [2.8.2. Was geht NICHT – und der Workaround](#282-was-geht-nicht--und-der-workaround)
+  - [2.9. Weitere nützliche Schema-Befehle](#29-weitere-nützliche-schema-befehle)
+    - [2.9.1. Schema inspizieren](#291-schema-inspizieren)
+    - [2.9.2. Indizes](#292-indizes)
+    - [2.9.3. Views – Virtuelle Tabellen](#293-views--virtuelle-tabellen)
+- [3. Übungsaufgaben](#3-übungsaufgaben)
+  - [3.1. E-Commerce Shop](#31-e-commerce-shop)
+  - [3.2. Produktherstellung (Implementierung)](#32-produktherstellung-implementierung)
+  - [3.3. Schulverwaltung (Implementierung)](#33-schulverwaltung-implementierung)
+  - [3.4. Lernangebot (Normalisierung u. Implementierung)](#34-lernangebot-normalisierung-u-implementierung)
 
 ---
 
@@ -57,7 +65,38 @@ Nach dieser Lektion könnt ihr:
 
 ---
 
-## 1.2. Was ist SQL?
+# 2. Vom Relationenmodell zur SQL-Implementierung
+
+## 2.1. Überblick: Der Transformationsprozess
+
+Sie haben in den bisherigen Kapiteln folgende Schritte durchlaufen:
+
+```bash
+Anforderung (Textform)
+        ↓
+ERM (Entity-Relationship-Modell) — Konzeptionell, grafisch
+        ↓
+Relationenmodell (Tabellenübersicht) — Logisch, Tabellen + Schlüssel
+        ↓
+Normalisierung (1NF, 2NF, 3NF) — Anomalien beseitigt
+        ↓
+SQL-Datenbank (CREATE TABLE, Constraints) — Physisch, lauffähig
+```
+
+**Dieses Kapitel verbindet Schritte 3 und 4:** Wie wird ein normalisiertes Relationenmodell **konkret** in SQLite umgesetzt?
+
+### 2.1.1. Typische Fragen bei diesem Übergang
+
+- "Ich habe eine Tabelle `KUNDEN` mit Attributen `ID`, `Name`, `Email`. Wie schreibe ich die `CREATE TABLE`-Anweisung?"
+- "Welcher Datentyp passt zu welchem Attribut? INTEGER oder TEXT?"
+- "Wie definiere ich Primary Keys und Foreign Keys in der SQL-Syntax?"
+- "Welche Constraints (`NOT NULL`, `UNIQUE`, `CHECK`) sind sinnvoll?"
+
+Diese Fragen beantworten wir im folgenden Kapitel **systematisch** und an vielen Beispielen.
+
+---
+
+## 2.2. Was ist SQL?
 
 **SQL (Structured Query Language)** ist die Standardsprache zur Definition, Manipulation und Abfrage relationaler Datenbanken. Sie gliedert sich – wie in Kapitel 1 eingeführt – in drei Teilsprachen:
 
@@ -75,7 +114,7 @@ SQL wurde in den 1970er-Jahren bei IBM entwickelt, ursprünglich unter dem Namen
 
 ---
 
-## 1.3. Datentypen in SQLite: Type Affinity
+## 2.3. Datentypen in SQLite: Type Affinity
 
 Im Gegensatz zu SQL Server, wo jede Spalte einen strikt festgelegten Datentyp besitzt, verwendet SQLite ein flexibleres Konzept namens **Type Affinity** (Typ-Affinität). Jede Spalte „bevorzugt" einen bestimmten Speichertyp, erzwingt ihn aber nicht zwingend.
 
@@ -87,7 +126,7 @@ Im Gegensatz zu SQL Server, wo jede Spalte einen strikt festgelegten Datentyp be
 | `BLOB`                    | Binärdaten                | `BLOB`                                  |
 | `NUMERIC`                 | Zahl, inkl. Datum/Boolean | `NUMERIC`, `DECIMAL`, `BOOLEAN`, `DATE` |
 
-### 1.3.1. Wie Type Affinity konkret funktioniert
+### 2.3.1. Wie Type Affinity konkret funktioniert
 
 SQLite bestimmt die Affinität einer Spalte anhand von Schlüsselwörtern im deklarierten Typnamen (nicht anhand einer festen Liste erlaubter Typen). Enthält der Typname z.B. die Zeichenfolge „INT", erhält die Spalte `INTEGER`-Affinität; enthält er „CHAR", „CLOB" oder „TEXT", erhält sie `TEXT`-Affinität; enthält er „REAL", „FLOA" oder „DOUB", erhält sie `REAL`-Affinität. Diese Affinität beeinflusst, wie SQLite einen eingefügten Wert **versucht** zu speichern – erzwingt dies aber, anders als bei SQL Server, nicht strikt: Wird z.B. ein Text in eine Spalte mit `INTEGER`-Affinität eingefügt, der sich nicht verlustfrei in eine Zahl umwandeln lässt, speichert SQLite ihn trotzdem als Text.
 
@@ -100,11 +139,11 @@ SQLite bestimmt die Affinität einer Spalte anhand von Schlüsselwörtern im dek
 - Diese Flexibilität erleichtert den Einstieg, verlangt aber im Gegenzug mehr Disziplin bei der Datenpflege (z.B. sollte die Applikation sicherstellen, dass wirklich nur gültige Datumswerte in einer `TEXT`-Spalte landen).
 - Für Studierende mit Vorkenntnissen aus SQL Server ist dies oft die grösste Umstellung: Ein `CHECK`-Constraint (siehe 6.3) kann teilweise verwendet werden, um die in SQL Server selbstverständliche Typsicherheit nachzubilden, falls dies für die Anwendung wichtig ist.
 
-### 1.3.2. Warum wurde dieses Konzept gewählt?
+### 2.3.2. Warum wurde dieses Konzept gewählt?
 
 Type Affinity ist eine bewusste Designentscheidung der SQLite-Entwickler, um die Interoperabilität mit dynamisch typisierten Programmiersprachen (z.B. Python, JavaScript) zu vereinfachen, in denen Variablen ihren Typ zur Laufzeit wechseln können. Für den professionellen Einsatz bedeutet dies: Die **Disziplin**, nur sinnvolle Werte in eine Spalte zu schreiben, verlagert sich stärker auf die Anwendungsebene (bzw. auf `CHECK`-Constraints) als bei einem streng typisierten System wie SQL Server.
 
-### 1.3.3. Empfohlene Datentypen für SQLite
+### 2.3.3. Empfohlene Datentypen für SQLite
 
 In der Praxis verwendet ihr diese Typen – SQLite mappt sie intern auf die
 Storage Classes oben:
@@ -117,7 +156,7 @@ Storage Classes oben:
 | `BLOB`     | BLOB     | Bilder, Dateien (selten in SQLite)      |
 | `NUMERIC`  | NUMERIC  | Geldbeträge mit definierter Genauigkeit |
 
-### 1.3.4. Datumstypen – die wichtigste SQLite-Besonderheit
+### 2.3.4. Datumstypen – die wichtigste SQLite-Besonderheit
 
 SQLite hat **keinen eingebauten Datumstyp**. Datum und Zeit werden als `TEXT`,
 `INTEGER` oder `REAL` gespeichert. Die empfohlene Convention:
@@ -140,11 +179,86 @@ SELECT strftime('%d.%m.%Y', geburtsdatum);   -- '15.11.1990'
 > konsequent daran. `TEXT` mit ISO 8601 ist am lesbarsten und am einfachsten
 > zu debuggen.
 
+### 2.3.5. Die Type Affinity Entscheidung
+
+Das **schwierigste** Problem beim Übergang ist: **Welcher Datentyp?**
+
+Im Relationenmodell stand:
+
+```bash
+Kunde
+- ID: Ganzzahl
+- Name: Text
+- Geburtsdatum: Datum
+- Lagerbestand: Dezimalzahl
+```
+
+Die Abbildung auf **SQLite Type Affinity**:
+
+| **RM-Attribute**        | **Bedeutung**   | **SQLite-Typ**      | **Beispiel-Wert**        |
+| ----------------------- | --------------- | ------------------- | ------------------------ |
+| ID, Anzahl              | Ganzzahlen      | `INTEGER`           | `42`, `1000`             |
+| Name, Beschreibung      | Text            | `TEXT`              | `'Anna Müller'`, `'Rot'` |
+| Geburtsdatum, Kaufdatum | Datum           | `TEXT` (ISO-Format) | `'1990-03-15'`           |
+| Preis, Gewicht          | Dezimalzahlen   | `REAL`              | `29.99`, `3.14`          |
+| Grosse Geldbeträge      | Precise Dezimal | `NUMERIC`           | `1234.56`                |
+| Aktiv/Passiv            | Boolean         | `INTEGER` (0/1)     | `0` (false), `1` (true)  |
+| Bild, Datei             | Binärdaten      | `BLOB`              | (selten in Lernkursen)   |
+
+### 2.3.6. Entscheidungshilfe: Die Beispiel-Datenbank
+
+Für die **Bibliotheksdatenbank** lauten die Entscheidungen:
+
+```sql
+CREATE TABLE autoren (
+  id          INTEGER,              -- eindeutige ID
+  vorname     TEXT,                  -- Namen = Text
+  nachname    TEXT,
+  land        TEXT,                  -- Länder = Text
+  geburtsjahr INTEGER                -- Jahre = Integer
+);
+
+CREATE TABLE buecher (
+  id            INTEGER,             -- eindeutige ID
+  titel         TEXT,                -- Titel = Text
+  autor_id      INTEGER,             -- Fremdschlüssel-Referenz = Integer
+  genre         TEXT,                -- Genre = Text
+  jahr          INTEGER,             -- Veröffentlichungsjahr = Integer
+  preis         REAL,                -- Preis kann Dezimalstellen haben
+  lagerbestand  INTEGER              -- Menge = Integer
+);
+
+CREATE TABLE kunden (
+  id    INTEGER,                     -- eindeutige ID
+  name  TEXT,                        -- Name = Text
+  email TEXT,                        -- Email = Text
+  stadt TEXT                         -- Stadt = Text
+);
+
+CREATE TABLE ausleihen (
+  id            INTEGER,             -- eindeutige ID
+  kunden_id     INTEGER,             -- Fremdschlüssel = Integer
+  buch_id       INTEGER,             -- Fremdschlüssel = Integer
+  ausleihdatum  TEXT,                -- Datum = TEXT im ISO-Format 'YYYY-MM-DD'
+  rueckgabe     TEXT                 -- Datum = TEXT im ISO-Format 'YYYY-MM-DD'
+);
+```
+
+### 2.3.7. Type Affinity Faustregel
+
+| **Frage**                                      | **Typ wählen**                 |
+| ---------------------------------------------- | ------------------------------ |
+| Wird damit gerechnet (addiert, multipliziert)? | `INTEGER` oder `REAL`          |
+| Kann es Dezimalstellen haben?                  | `REAL`                         |
+| Ist es eindeutig Text?                         | `TEXT`                         |
+| Ist es ein Datum?                              | `TEXT` (Format `'YYYY-MM-DD'`) |
+| Ist es ja/nein?                                | `INTEGER` (0 oder 1)           |
+
 ---
 
-## 1.4. CREATE TABLE – Tabellen erstellen
+## 2.4. CREATE TABLE – Tabellen erstellen
 
-### 1.4.1. Grundsyntax
+### 2.4.1. Grundsyntax
 
 ![SQL CREATE TABLE](./x_gitres/create-table.png)
 
@@ -174,7 +288,7 @@ CREATE TABLE kunden (
 
 > **SQLite-Spezialität:** Eine Spalte vom Typ `INTEGER PRIMARY KEY` (ohne `AUTOINCREMENT`) wird automatisch zu einem Alias des internen `rowid` und zählt ebenfalls automatisch hoch. `AUTOINCREMENT` sollte nur explizit angegeben werden, wenn garantiert werden muss, dass eine einmal verwendete Nummer **nie** wiederverwendet wird (z.B. bei gelöschten Zeilen) – für die meisten Kursbeispiele genügt `INTEGER PRIMARY KEY`.
 
-### 1.4.2. IF NOT EXISTS – Sicheres Erstellen
+### 2.4.2. IF NOT EXISTS – Sicheres Erstellen
 
 ```sql
 -- Ohne IF NOT EXISTS: Fehler, wenn Tabelle bereits existiert
@@ -187,7 +301,9 @@ CREATE TABLE IF NOT EXISTS kunden ( ... );
 > **Best Practice:** In Setup-Skripten immer `IF NOT EXISTS` verwenden –
 > so kann das Skript mehrfach ausgeführt werden, ohne Fehler zu werfen.
 
-### 1.4.3. Constraints im Überblick
+---
+
+## 2.5. Constraints im Überblick
 
 ![SQL-Constraints](./x_gitres/constraints.png)
 
@@ -202,7 +318,7 @@ CREATE TABLE IF NOT EXISTS kunden ( ... );
 
 Constraints sind ein zentrales Werkzeug, um Datenintegrität **direkt auf Datenbankebene** sicherzustellen, statt sich ausschliesslich auf die Applikationslogik zu verlassen. Der grosse Vorteil: Ein Constraint gilt für **jeden** Zugriffsweg auf die Datenbank – egal ob über die geplante Applikation, ein Wartungsskript oder eine manuelle Korrektur direkt in Letos. Fehlerhafte Daten werden so bereits an der Quelle verhindert, statt erst nachträglich (und oft zu spät) entdeckt zu werden.
 
-#### 1.4.3.1. NOT NULL - Constraint
+### 2.5.1. NOT NULL - Constraint
 
 Verhindert leere Werte. Felder ohne `NOT NULL` akzeptieren automatisch `NULL`.
 
@@ -228,16 +344,24 @@ VALUES (3, 'Roman', 2020);
 -- Fehler: NOT NULL constraint failed: buecher.titel
 ```
 
-#### 1.4.3.2. PRIMARY KEY - Constraint
+### 2.5.2. PRIMARY KEY - Constraint
 
 Kombination aus `NOT NULL` und `UNIQUE`. Jede Tabelle sollte einen
 Primärschlüssel haben.
 
 ```sql
 -- Einfacher PK (häufigster Fall)
-id INTEGER PRIMARY KEY AUTOINCREMENT
+CREATE TABLE kunden (
+  id    INTEGER PRIMARY KEY AUTOINCREMENT,
+  name  TEXT NOT NULL,
+  email TEXT UNIQUE,
+  stadt TEXT
+);
 ```
 
+> `PRIMARY KEY`: Diese Spalte ist der **eindeutige Identifikator** der Tabelle
+> Jeder Datensatz hat eine **unique ID**, keine Duplikate möglich
+>
 > **AUTOINCREMENT – wann nötig?**
 > Ohne `AUTOINCREMENT`: SQLite wählt `MAX(id) + 1`. Gelöschte IDs können
 > wiederverwendet werden.
@@ -245,7 +369,7 @@ id INTEGER PRIMARY KEY AUTOINCREMENT
 > wiederverwendet. Braucht etwas mehr Overhead – für die meisten Anwendungen
 > empfehlenswert, wenn IDs auch als Referenz nach aussen dienen.
 
-#### 1.4.3.3. Zusammengesetzter Primärschlüssel (Zwischentabelle)
+### 2.5.3. Zusammengesetzter Primärschlüssel (Zwischentabelle)
 
 Für eine Zwischentabelle liegt ein zusammengesetzter Primärschlüssel aus beiden Fremdschlüsseln nahe:
 
@@ -273,7 +397,7 @@ CREATE TABLE ausleihen (
 
 Dieselbe Überlegung ist bereits in Kapitel 4.2 (künstlicher vs. natürlicher Schlüssel) angesprochen worden – hier zeigt sich ihr praktischer Nutzen bei Zwischentabellen ganz konkret.
 
-#### 1.4.3.4. Foreign Key - Constraint
+### 2.5.4. Foreign Key - Constraint
 
 ![Variante 1](./x_gitres/foreign-key-constraint-1.png)
 
@@ -301,101 +425,7 @@ CREATE TABLE ausleihen (
 
 Dieses Verhalten überrascht Studierende mit SQL-Server-Erfahrung meist am meisten, da dort Fremdschlüsselprüfungen von Anfang an aktiv sind. Der historische Grund: SQLite wurde ursprünglich primär für sehr kleine, eingebettete Anwendungen konzipiert, bei denen maximale Kompatibilität mit älteren SQL-Dialekten wichtiger war als eine standardmässig strikte referentielle Integrität. Aus heutiger Sicht ist es Best Practice, `PRAGMA foreign_keys = ON` konsequent zu setzen.
 
-#### 1.4.3.5. UNIQUE - Constraint
-
-Garantiert, dass kein Wert in dieser Spalte doppelt vorkommt.
-`NULL`-Werte sind von `UNIQUE` ausgenommen – mehrere `NULL`-Werte sind erlaubt.
-
-![Beipspiel](./x_gitres/unique-constraint.png)
-
-```sql
--- Einfach-UNIQUE auf Spaltenebene
-email TEXT UNIQUE
-
--- Zusammengesetztes UNIQUE auf Tabellenebene
--- (Kombination muss eindeutig sein, nicht jede Spalte einzeln)
-CREATE TABLE buecher (
-    id     INTEGER PRIMARY KEY AUTOINCREMENT,
-    titel  TEXT NOT NULL,
-    jahr   INTEGER,
-    UNIQUE (titel, jahr)   -- kein doppelter Katalogeintrag desselben Titels im selben Jahr
-);
-```
-
-#### 1.4.3.6. CHECK
-
-Prüft einen beliebigen booleschen Ausdruck. `INSERT` und `UPDATE` schlagen
-fehl, wenn die Bedingung `FALSE` ergibt. `NULL` besteht den CHECK
-(da `NULL` in SQLite als "unbekannt" gilt, nicht als falsch).
-
-```sql
--- Einfache CHECK-Constraints (nachträglich per ALTER TABLE ergänzt)
-ALTER TABLE buecher ADD COLUMN seitenzahl INTEGER
-    CHECK (seitenzahl > 0);
-
--- Typische CHECKs in der Praxis
-preis        REAL    NOT NULL CHECK (preis >= 0),
-lagerbestand INTEGER NOT NULL DEFAULT 0 CHECK (lagerbestand >= 0),
-genre        TEXT             CHECK (genre IN ('Roman', 'Krimi', 'Sachbuch', 'Biografie', 'Fantasy')),
-rueckgabe    TEXT             CHECK (rueckgabe IS NULL OR rueckgabe >= ausleihdatum),  -- spaltenübergreifend
-
--- Ausleihen-Tabelle mit mehreren Checks
-CREATE TABLE IF NOT EXISTS ausleihen (
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
-    kunden_id     INTEGER NOT NULL REFERENCES kunden(id),
-    buch_id       INTEGER NOT NULL REFERENCES buecher(id),
-    ausleihdatum  TEXT    NOT NULL DEFAULT (date('now')),
-    rueckgabe     TEXT,
-    CONSTRAINT valid_zeitraum CHECK (rueckgabe IS NULL OR rueckgabe >= ausleihdatum)
-);
-```
-
-> **Benannte Constraints:** Mit `CONSTRAINT name` können Constraints
-> benannt werden. Das ergibt bessere Fehlermeldungen und erleichtert das
-> spätere Löschen (bei ALTER TABLE).
-
-#### 1.4.3.7. DEFAULT - Constraint
-
-Definiert einen Standardwert, der verwendet wird, wenn beim `INSERT` kein
-Wert angegeben wird.
-
-```sql
--- Statischer Standardwert
-lagerbestand INTEGER NOT NULL DEFAULT 0
-stadt        TEXT             DEFAULT 'unbekannt'
-
--- Dynamischer Standardwert (Funktion)
-ausleihdatum TEXT NOT NULL DEFAULT (date('now'))
-token        TEXT NOT NULL DEFAULT (hex(randomblob(16)))
-
--- Verwendung:
-INSERT INTO ausleihen (kunden_id, buch_id)
-VALUES (3, 12);
--- ausleihdatum wird automatisch auf das heutige Datum gesetzt
--- rueckgabe bleibt NULL, weil das Buch noch nicht zurückgegeben wurde
-```
-
-### 1.4.4. Constraints auf Tabellenebene – Übersicht
-
-Constraints können an der Spalte (Spaltenebene) oder am Ende der
-Tabellendefinition (Tabellenebene) stehen. Tabellenebene ist zwingend
-für zusammengesetzte Constraints:
-
-```sql
-CREATE TABLE beispiel (
-    col_a INTEGER,
-    col_b INTEGER,
-    col_c TEXT,
-
-    -- Tabellenebene: zusammengesetzte Constraints
-    PRIMARY KEY (col_a, col_b),
-    UNIQUE (col_b, col_c),
-    CHECK (col_a > 0 AND col_b > col_a),
-    CONSTRAINT fk_beispiel FOREIGN KEY (col_a) REFERENCES andere_tabelle(id)
-);
-```
-
-### 1.4.5. ON DELETE und ON UPDATE – Referentielle Aktionen
+#### 2.5.4.1. ON DELETE und ON UPDATE – Referentielle Aktionen
 
 Was passiert, wenn ein referenzierter Datensatz gelöscht oder geändert wird?
 
@@ -443,9 +473,137 @@ kunden_id INTEGER NOT NULL
     ON DELETE RESTRICT
 ```
 
+### 2.5.5. UNIQUE - Constraint (Eindeutigkeit ohne PK)
+
+Manchmal sollen auch **andere Spalten** eindeutig sein (z.B. Email):
+Garantiert, dass kein Wert in dieser Spalte doppelt vorkommt.
+`NULL`-Werte sind von `UNIQUE` ausgenommen – mehrere `NULL`-Werte sind erlaubt.
+
+![Beipspiel](./x_gitres/unique-constraint.png)
+
+```sql
+CREATE TABLE kunden (
+  id    INTEGER PRIMARY KEY AUTOINCREMENT,
+  name  TEXT NOT NULL,
+  email TEXT UNIQUE,            -- Keine zwei Kunden mit gleicher Email
+  stadt TEXT
+);
+```
+
+```sql
+-- Zusammengesetztes UNIQUE auf Tabellenebene
+-- (Kombination muss eindeutig sein, nicht jede Spalte einzeln)
+CREATE TABLE buecher (
+    id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    titel  TEXT NOT NULL,
+    jahr   INTEGER,
+    UNIQUE (titel, jahr)   -- kein doppelter Katalogeintrag desselben Titels im selben Jahr
+);
+```
+
+**Unterschied:**
+
+- `PRIMARY KEY`: Nur eine pro Tabelle, kann `NULL` nicht enthalten
+- `UNIQUE`: Mehrere pro Tabelle möglich, kann `NULL` enthalten (aber nur einmal!)
+
+### 2.5.6. CHECK
+
+Prüft einen beliebigen booleschen Ausdruck. `INSERT` und `UPDATE` schlagen
+fehl, wenn die Bedingung `FALSE` ergibt. `NULL` besteht den CHECK
+(da `NULL` in SQLite als "unbekannt" gilt, nicht als falsch).
+
+```sql
+-- Einfache CHECK-Constraints (nachträglich per ALTER TABLE ergänzt)
+ALTER TABLE buecher ADD COLUMN seitenzahl INTEGER
+    CHECK (seitenzahl > 0);
+
+-- Typische CHECKs in der Praxis
+preis        REAL    NOT NULL CHECK (preis >= 0),
+lagerbestand INTEGER NOT NULL DEFAULT 0 CHECK (lagerbestand >= 0),
+genre        TEXT             CHECK (genre IN ('Roman', 'Krimi', 'Sachbuch', 'Biografie', 'Fantasy')),
+rueckgabe    TEXT             CHECK (rueckgabe IS NULL OR rueckgabe >= ausleihdatum),  -- spaltenübergreifend
+
+-- Ausleihen-Tabelle mit mehreren Checks
+CREATE TABLE IF NOT EXISTS ausleihen (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    kunden_id     INTEGER NOT NULL REFERENCES kunden(id),
+    buch_id       INTEGER NOT NULL REFERENCES buecher(id),
+    ausleihdatum  TEXT    NOT NULL DEFAULT (date('now')),
+    rueckgabe     TEXT,
+    CONSTRAINT valid_zeitraum CHECK (rueckgabe IS NULL OR rueckgabe >= ausleihdatum)
+);
+```
+
+> **Benannte Constraints:** Mit `CONSTRAINT name` können Constraints
+> benannt werden. Das ergibt bessere Fehlermeldungen und erleichtert das
+> spätere Löschen (bei ALTER TABLE).
+
+### 2.5.7. DEFAULT - Constraint
+
+Definiert einen Standardwert, der verwendet wird, wenn beim `INSERT` kein
+Wert angegeben wird.
+
+```sql
+-- Statischer Standardwert
+lagerbestand INTEGER NOT NULL DEFAULT 0
+stadt        TEXT             DEFAULT 'unbekannt'
+
+-- Dynamischer Standardwert (Funktion)
+ausleihdatum TEXT NOT NULL DEFAULT (date('now'))
+token        TEXT NOT NULL DEFAULT (hex(randomblob(16)))
+
+-- Verwendung:
+INSERT INTO ausleihen (kunden_id, buch_id)
+VALUES (3, 12);
+-- ausleihdatum wird automatisch auf das heutige Datum gesetzt
+-- rueckgabe bleibt NULL, weil das Buch noch nicht zurückgegeben wurde
+```
+
+### 2.5.8. Constraints auf Tabellenebene – Übersicht
+
+Constraints können an der Spalte (Spaltenebene) oder am Ende der
+Tabellendefinition (Tabellenebene) stehen. Tabellenebene ist zwingend
+für zusammengesetzte Constraints:
+
+```sql
+CREATE TABLE beispiel (
+    col_a INTEGER,
+    col_b INTEGER,
+    col_c TEXT,
+
+    -- Tabellenebene: zusammengesetzte Constraints
+    PRIMARY KEY (col_a, col_b),
+    UNIQUE (col_b, col_c),
+    CHECK (col_a > 0 AND col_b > col_a),
+    CONSTRAINT fk_beispiel FOREIGN KEY (col_a) REFERENCES andere_tabelle(id)
+);
+```
+
 ---
 
-## 1.5. DROP TABLE – Tabellen löschen
+## 2.6. Mapping-Übersicht: RM-Konzept → SQL-Konstrukt
+
+Diese Tabelle ist deine **Schnell-Referenz** beim Implementieren:
+
+| **Im Relationenmodell**             | **In SQL schreiben**                      | **Beispiel**                            |
+| ----------------------------------- | ----------------------------------------- | --------------------------------------- |
+| **Relation KUNDEN**                 | `CREATE TABLE kunden ( ... )`             | `CREATE TABLE kunden (id INTEGER, ...)` |
+| **Attribut: ID (PK)**               | `id INTEGER PRIMARY KEY AUTOINCREMENT`    | ✓ oben                                  |
+| **Attribut: Name (Text)**           | `name TEXT NOT NULL`                      | ✓ oben                                  |
+| **Attribut: Email (eindeutig)**     | `email TEXT UNIQUE`                       | ✓ oben                                  |
+| **Attribut: Stadt (optional)**      | `stadt TEXT`                              | (kein NOT NULL)                         |
+| **Attribut: Preis (Dezimal)**       | `preis REAL`                              | `preis REAL CHECK(preis > 0)`           |
+| **Attribut: Geburtsdatum**          | `geburtsdatum TEXT`                       | (Format: 'YYYY-MM-DD')                  |
+| **Fremdschlüssel → andere Tabelle** | `kunden_id INTEGER REFERENCES kunden(id)` | ✓ siehe FOREIGN KEY                     |
+| **1:1-Beziehung**                   | FK + UNIQUE in einer Tabelle              | `UNIQUE REFERENCES ...`                 |
+| **1:n-Beziehung**                   | FK in der "vielen"-Seite                  | Ausleihen → Kunden                      |
+| **m:n-Beziehung**                   | Zwischentabelle mit kombiniertem PK       | schueler_kurse                          |
+| **Geschäftsregel (Bedingung)**      | `CHECK (bedingung)`                       | `CHECK(preis > 0)`                      |
+| **Standardwert**                    | `DEFAULT wert`                            | `DEFAULT 'aktiv'`                       |
+
+---
+
+## 2.7. DROP TABLE – Tabellen löschen
 
 ```sql
 -- Tabelle löschen (Fehler, wenn nicht vorhanden)
@@ -476,12 +634,12 @@ DROP TABLE IF EXISTS autoren;     -- keine FK nach aussen
 
 ---
 
-## 1.6. ALTER TABLE – Tabellen anpassen
+## 2.8. ALTER TABLE – Tabellen anpassen
 
 SQLite unterstützt nur einen eingeschränkten Satz von `ALTER TABLE`-Befehlen
 im Vergleich zu anderen Datenbanken.
 
-### 1.6.1. Was geht in SQLite
+### 2.8.1. Was geht in SQLite
 
 ```sql
 -- Tabelle umbenennen
@@ -499,7 +657,7 @@ ALTER TABLE kunden ADD COLUMN newsletter INTEGER NOT NULL DEFAULT 0;
 ALTER TABLE kunden DROP COLUMN telefon;
 ```
 
-### 1.6.2. Was geht NICHT – und der Workaround
+### 2.8.2. Was geht NICHT – und der Workaround
 
 SQLite erlaubt kein nachträgliches Hinzufügen von Constraints (z.B. `UNIQUE`,
 `CHECK`, `FOREIGN KEY`) zu bestehenden Spalten. Dafür gibt es den
@@ -534,9 +692,9 @@ ALTER TABLE kunden_neu RENAME TO kunden;
 
 ---
 
-## 1.7. Weitere nützliche Schema-Befehle
+## 2.9. Weitere nützliche Schema-Befehle
 
-### 1.7.1. Schema inspizieren
+### 2.9.1. Schema inspizieren
 
 ```sql
 -- Alle Tabellen anzeigen
@@ -556,7 +714,7 @@ PRAGMA foreign_key_list(buecher);
 PRAGMA index_list(kunden);
 ```
 
-### 1.7.2. Indizes
+### 2.9.2. Indizes
 
 Indizes beschleunigen Abfragen auf Kosten von Speicher und Schreibperformance.
 Primary Keys und UNIQUE-Constraints erstellen automatisch einen Index.
@@ -579,7 +737,7 @@ CREATE INDEX IF NOT EXISTS idx_ausleihen_offen
 DROP INDEX IF EXISTS idx_kunden_name;
 ```
 
-### 1.7.3. Views – Virtuelle Tabellen
+### 2.9.3. Views – Virtuelle Tabellen
 
 Views sind gespeicherte SELECT-Abfragen, die wie Tabellen abgefragt werden
 können. Sie speichern keine Daten, sondern nur die Abfrage.
@@ -607,9 +765,64 @@ DROP VIEW IF EXISTS v_buecher_mit_autor;
 
 </br>
 
-# 2. Übungsaufgaben
+# 3. Übungsaufgaben
 
-## 2.1. Produktherstellung (Implementierung)
+## 3.1. E-Commerce Shop
+
+| **Vorgabe**             | **Beschreibung**                                              |
+| :---------------------- | :------------------------------------------------------------ |
+| **Lernziele**           | Kann ein relationales Datenbankmodell mit SQL implementieren. |
+| **Sozialform**          | Einzelarbeit                                                  |
+| **Auftrag**             | siehe unten                                                   |
+| **Hilfsmittel**         |                                                               |
+| **Erwartete Resultate** |                                                               |
+| **Zeitbedarf**          | 30 min                                                        |
+| **Lösungselemente**     | Fehlerfreie SQL-Skriptdateien                                 |
+|                         | `e_commerce_shop_create_schema.sql`                           |
+
+**Aufgaben:**
+
+1. Leite aus dem Relationen Modell die Tabellennamen und Attributbezeichnungen ab
+2. Lege die korrekten Datentypen zu den Attributen fest
+3. Besteimme die Primärschlüssel- u. Fremdschlüsselattribute
+4. Lege die Pflichtfelder fest
+
+```bash
+KUNDEN
+- ID (PK)
+- Name
+- Email (eindeutig)
+- Strasse
+- PLZ
+- Ort
+
+PRODUKTE
+- ID (PK)
+- Name
+- Beschreibung
+- Preis (muss > 0)
+- Lagerbestand (muss >= 0)
+- Kategorie_ID (FK → KATEGORIEN)
+
+KATEGORIEN
+- ID (PK)
+- Name (eindeutig)
+- Beschreibung
+
+BESTELLUNGEN
+- ID (PK)
+- Kunde_ID (FK → KUNDEN)
+- Bestelldatum
+- Status (DEFAULT: 'offen')
+
+BESTELLPOSITIONEN (m:n)
+- Bestellung_ID (FK → BESTELLUNGEN)
+- Produkt_ID (FK → PRODUKTE)
+- Menge (muss > 0)
+- Preis_pro_Einheit
+```
+
+## 3.2. Produktherstellung (Implementierung)
 
 | **Vorgabe**             | **Beschreibung**                                              |
 | :---------------------- | :------------------------------------------------------------ |
@@ -645,7 +858,7 @@ CREATE TABLE Ort (
 
 ---
 
-## 2.2. Schulverwaltung (Implementierung)
+## 3.3. Schulverwaltung (Implementierung)
 
 | **Vorgabe**             | **Beschreibung**                                              |
 | :---------------------- | :------------------------------------------------------------ |
@@ -680,7 +893,7 @@ CREATE TABLE MITGLIED (
 
 ---
 
-## 2.3. Lernangebot (Normalisierung u. Implementierung)
+## 3.4. Lernangebot (Normalisierung u. Implementierung)
 
 | **Vorgabe**             | **Beschreibung**                                                          |
 | :---------------------- | :------------------------------------------------------------------------ |
